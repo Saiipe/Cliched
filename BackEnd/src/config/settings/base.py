@@ -53,8 +53,10 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "django_filters",
+    "drf_spectacular",
 ]
 
 LOCAL_APPS = [
@@ -152,6 +154,15 @@ REST_FRAMEWORK = {
     ),
     "EXCEPTION_HANDLER": "shared.exceptions.handlers.custom_exception_handler",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# drf-spectacular (OpenAPI / Swagger)
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Cliched API",
+    "DESCRIPTION": "API do Cliched — plataforma de jogos sobre cinema.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 # Simple JWT

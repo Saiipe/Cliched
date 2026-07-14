@@ -1,4 +1,6 @@
 import requests
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 
@@ -12,6 +14,16 @@ class TMDBSearchView(APIView):
 
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        summary="Buscar filmes (TMDB)",
+        description="Proxy da busca do TMDB — usado pelo autocomplete de palpites.",
+        parameters=[
+            OpenApiParameter(name="query", type=OpenApiTypes.STR, required=True,
+                             description="Texto de busca (nome do filme)."),
+        ],
+        responses={200: OpenApiTypes.OBJECT, 429: OpenApiTypes.OBJECT, 502: OpenApiTypes.OBJECT},
+        tags=["movies"],
+    )
     def get(self, request):
         query = request.query_params.get("query", "").strip()
         if not query:

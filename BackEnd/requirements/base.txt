@@ -6,3 +6,5 @@ python-dotenv==1.2.2
 django-cors-headers==4.9.0
 django-filter==26.1
 requests==2.34.2
+Pillow==11.3.0
+drf-spectacular==0.30.0

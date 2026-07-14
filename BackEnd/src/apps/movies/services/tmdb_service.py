@@ -37,3 +37,21 @@ class TMDBService:
     def get_movie(self, tmdb_id: int, language: str = "pt-BR") -> dict:
         response = self._client.get(f"movie/{tmdb_id}", params={"language": language})
         return response.json()
+
+    def get_movie_with_credits(self, tmdb_id: int, language: str = "pt-BR") -> dict:
+        response = self._client.get(
+            f"movie/{tmdb_id}",
+            params={"language": language, "append_to_response": "credits"},
+        )
+        return response.json()
+
+    def discover_movies(self, page: int = 1, language: str = "pt-BR", **filters) -> dict:
+        params = {
+            "page": page,
+            "language": language,
+            "include_adult": False,
+            "sort_by": "popularity.desc",
+            **filters,
+        }
+        response = self._client.get("discover/movie", params=params)
+        return response.json()
