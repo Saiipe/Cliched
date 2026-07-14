@@ -21,7 +21,7 @@ const NAV_LINKS: readonly NavLink[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, Button, Icon],
   template: `
-    <header class="sticky top-0 z-10 border-b border-border bg-bg/80 backdrop-blur">
+    <header class="sticky top-0 z-10 border-b border-border bg-bg/50 backdrop-blur-md">
       <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <a routerLink="/" class="flex items-center gap-2.5">
           <span class="flex size-8 items-center justify-center rounded-lg bg-surface-elevated">

@@ -10,7 +10,7 @@ import type { GameMode } from '../../models/game-mode.model';
   imports: [Badge, Button, Icon],
   template: `
     <article
-      class="relative flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6"
+      class="relative flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-all hover:border-secondary/60 hover:shadow-[0_0_24px_-4px_var(--secondary)]"
     >
       @if (gameMode().status === 'coming-soon') {
         <app-badge variant="muted" class="absolute right-6 top-6">Em breve</app-badge>

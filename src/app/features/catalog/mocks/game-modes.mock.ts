@@ -1,4 +1,15 @@
-import { IconFileText, IconPhoto, IconMusic, IconUsers } from '@tabler/icons-angular';
+import {
+  IconCalendarEvent,
+  IconChairDirector,
+  IconFileText,
+  IconInfinity,
+  IconMask,
+  IconMusic,
+  IconPhoto,
+  IconQuotes,
+  IconUsers,
+  IconUsersGroup,
+} from '@tabler/icons-angular';
 import type { GameMode } from '../models/game-mode.model';
 
 export const GAME_MODES_MOCK: readonly GameMode[] = [
@@ -33,5 +44,53 @@ export const GAME_MODES_MOCK: readonly GameMode[] = [
     icon: IconUsers,
     status: 'available',
     route: '/jogar/elenco',
+  },
+  {
+    id: 'quotes',
+    title: 'Falas Marcantes',
+    description: 'Reconheça o filme a partir de uma fala icônica.',
+    icon: IconQuotes,
+    status: 'coming-soon',
+    route: '/jogar/falas',
+  },
+  {
+    id: 'character',
+    title: 'Personagem',
+    description: 'Adivinhe o filme a partir da descrição de um personagem.',
+    icon: IconMask,
+    status: 'coming-soon',
+    route: '/jogar/personagem',
+  },
+  {
+    id: 'director',
+    title: 'Diretor',
+    description: 'Descubra o filme a partir da filmografia do diretor.',
+    icon: IconChairDirector,
+    status: 'coming-soon',
+    route: '/jogar/diretor',
+  },
+  {
+    id: 'daily',
+    title: 'Desafio Diário',
+    description: 'Um desafio novo por dia, igual pra todo mundo.',
+    icon: IconCalendarEvent,
+    status: 'coming-soon',
+    route: '/jogar/diario',
+  },
+  {
+    id: 'infinite',
+    title: 'Modo Infinito',
+    description: 'Jogue rodada após rodada, sem limite de tentativas por dia.',
+    icon: IconInfinity,
+    status: 'coming-soon',
+    route: '/jogar/infinito',
+  },
+  {
+    id: 'multiplayer',
+    title: 'Multiplayer',
+    description: 'Desafie amigos em tempo real e veja quem acerta primeiro.',
+    icon: IconUsersGroup,
+    status: 'coming-soon',
+    route: '/jogar/multiplayer',
   },
 ];

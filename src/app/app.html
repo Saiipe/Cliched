@@ -1,7 +1,9 @@
 <app-header />
 
-<main class="bg-bg text-foreground">
-  <router-outlet />
-</main>
+<div class="flex min-h-[calc(100dvh-4rem)] flex-col">
+  <main class="flex-1 bg-bg text-foreground">
+    <router-outlet />
+  </main>
 
-<app-footer />
+  <app-footer />
+</div>
