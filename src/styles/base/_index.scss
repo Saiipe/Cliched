@@ -1,1 +1,10 @@
-// base partials
+html,
+body {
+  min-height: 100%;
+  background-color: var(--bg);
+  color: var(--foreground);
+}
+
+body {
+  margin: 0;
+}
