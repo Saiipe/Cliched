@@ -30,7 +30,8 @@
             ],
             "styles": [
               "src/styles/tailwind.css",
-              "src/styles/main.scss"
+              "src/styles/main.scss",
+              "@angular/cdk/overlay-prebuilt.css"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
