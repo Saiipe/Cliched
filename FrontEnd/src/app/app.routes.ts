@@ -13,8 +13,22 @@ export const routes: Routes = [
       },
       {
         path: 'jogar',
-        loadComponent: () =>
-          import('./features/catalog/pages/catalog-page/catalog-page').then((m) => m.CatalogPage),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/catalog/pages/catalog-page/catalog-page').then(
+                (m) => m.CatalogPage,
+              ),
+          },
+          {
+            path: 'diario',
+            loadComponent: () =>
+              import('./features/daily/pages/daily-page/daily-page').then(
+                (m) => m.DailyPage,
+              ),
+          },
+        ],
       },
       {
         path: 'ranking',

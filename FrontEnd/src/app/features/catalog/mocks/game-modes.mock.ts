@@ -74,7 +74,7 @@ export const GAME_MODES_MOCK: readonly GameMode[] = [
     title: 'Desafio Diário',
     description: 'Um desafio novo por dia, igual pra todo mundo.',
     icon: IconCalendarEvent,
-    status: 'coming-soon',
+    status: 'available',
     route: '/jogar/diario',
   },
   {

@@ -6,6 +6,7 @@ Environment-specific files (development.py, production.py, test.py) import from 
 from datetime import timedelta
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
 # config/settings/base.py -> config/settings -> config -> src -> BASE_DIR (backend root)
@@ -176,6 +177,12 @@ SIMPLE_JWT = {
 
 # CORS
 CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS")
+
+# The anonymous daily-challenge session (apps.games) is identified via a
+# custom X-Anon-Token header — corsheaders' default allow-list doesn't
+# include custom headers, so the browser's preflight rejects it and every
+# guess after the token is issued fails client-side with "Failed to fetch".
+CORS_ALLOW_HEADERS = [*default_headers, "x-anon-token"]
 
 # Logging
 LOGS_DIR = BASE_DIR / "logs"

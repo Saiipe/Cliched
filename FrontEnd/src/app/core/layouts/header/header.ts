@@ -1,8 +1,7 @@
+import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { IconMovie } from '@tabler/icons-angular';
 import { Button } from '../../../shared/ui/button/button';
-import { Icon } from '../../../shared/ui/icon/icon';
 
 interface NavLink {
   readonly label: string;
@@ -19,15 +18,20 @@ const NAV_LINKS: readonly NavLink[] = [
 @Component({
   selector: 'app-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, Button, Icon],
+  imports: [RouterLink, RouterLinkActive, Button, NgOptimizedImage],
   template: `
     <header class="sticky top-0 z-10 border-b border-border bg-bg/50 backdrop-blur-md">
       <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <a routerLink="/" class="flex items-center gap-2.5">
-          <span class="flex size-8 items-center justify-center rounded-lg bg-surface-elevated">
-            <app-icon [icon]="movieIcon" [size]="18" />
-          </span>
-          <span class="text-sm font-semibold text-foreground">Adivinhe o Filme</span>
+          <img
+            ngSrc="android-chrome-512x512.png"
+            width="32"
+            height="32"
+            priority
+            alt=""
+            class="size-8"
+          />
+          <span class="text-sm font-semibold text-foreground">Cliched</span>
         </a>
 
         <nav aria-label="Navegação principal" class="hidden items-center gap-8 md:flex">
@@ -53,5 +57,4 @@ const NAV_LINKS: readonly NavLink[] = [
 })
 export class Header {
   protected readonly navLinks = NAV_LINKS;
-  protected readonly movieIcon = IconMovie;
 }

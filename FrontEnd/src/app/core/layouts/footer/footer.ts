@@ -1,25 +1,27 @@
+import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { IconMessageCircle, IconMovie, IconWorld } from '@tabler/icons-angular';
+import { IconMessageCircle, IconWorld } from '@tabler/icons-angular';
 import { Icon } from '../../../shared/ui/icon/icon';
 
 @Component({
   selector: 'app-footer',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Icon],
+  imports: [Icon, NgOptimizedImage],
   template: `
     <footer class="border-t border-border bg-bg text-foreground">
       <div
         class="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-14 md:flex-row md:items-start md:justify-between"
       >
-        <div class="flex flex-col gap-3 md:max-w-xs">
-          <a routerLink="/" class="flex items-center gap-2.5">
-            <app-icon [icon]="movieIcon" [size]="18" />
-            <span class="text-sm font-semibold text-foreground">Adivinhe o Filme</span>
-          </a>
-          <p class="text-sm text-muted">
-            Um jogo diário para cinéfilos. Descubra filmes a partir de pistas, sinopses e frases
-            marcantes.
+        <div class="flex flex-col items-center gap-3 text-center md:items-start md:text-left">
+          <img
+            ngSrc="TMDB.svg"
+            width="95"
+            height="41"
+            alt="The Movie Database (TMDB)"
+            class="h-6 w-auto"
+          />
+          <p class="max-w-52 text-xs text-muted">
+            Este produto usa a API do TMDB, mas não é endossado ou certificado pelo TMDB.
           </p>
         </div>
 
@@ -37,13 +39,13 @@ import { Icon } from '../../../shared/ui/icon/icon';
       </div>
 
       <div class="border-t border-border py-6 text-center text-sm text-muted">
-        © 2026 Adivinhe o Filme. Todos os direitos reservados.
+        © {{ currentYear }} Cliched. Todos os direitos reservados.
       </div>
     </footer>
   `,
 })
 export class Footer {
-  protected readonly movieIcon = IconMovie;
   protected readonly discordIcon = IconMessageCircle;
   protected readonly siteIcon = IconWorld;
+  protected readonly currentYear = new Date().getFullYear();
 }

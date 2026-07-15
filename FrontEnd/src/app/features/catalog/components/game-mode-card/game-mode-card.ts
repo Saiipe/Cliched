@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Badge } from '../../../../shared/ui/badge/badge';
 import { Button } from '../../../../shared/ui/button/button';
 import { Icon } from '../../../../shared/ui/icon/icon';
@@ -7,7 +8,7 @@ import type { GameMode } from '../../models/game-mode.model';
 @Component({
   selector: 'app-game-mode-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Badge, Button, Icon],
+  imports: [Badge, Button, Icon, RouterLink],
   template: `
     <article
       class="relative flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6 transition-all hover:border-secondary/60 hover:shadow-[0_0_24px_-4px_var(--secondary)]"
@@ -25,14 +26,18 @@ import type { GameMode } from '../../models/game-mode.model';
         <p class="text-sm text-muted">{{ gameMode().description }}</p>
       </div>
 
-      <app-button
-        class="mt-auto"
-        [fullWidth]="true"
-        [variant]="gameMode().status === 'available' ? 'primary' : 'secondary'"
-        [disabled]="gameMode().status !== 'available'"
-      >
-        {{ gameMode().status === 'available' ? 'Jogar' : 'Em breve' }}
-      </app-button>
+      @if (gameMode().status === 'available') {
+        <a
+          [routerLink]="gameMode().route"
+          class="mt-auto inline-flex w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-bg transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+        >
+          Jogar
+        </a>
+      } @else {
+        <app-button class="mt-auto" [fullWidth]="true" [variant]="'secondary'" [disabled]="true">
+          Em breve
+        </app-button>
+      }
     </article>
   `,
 })
