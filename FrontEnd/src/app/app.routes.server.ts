@@ -12,6 +12,12 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    // Mesmo motivo: consome a API admin ao carregar (e criaria o desafio de
+    // amanhã em build-time se fosse pré-renderizada).
+    path: 'admin/desafio-diario',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: '**',
     renderMode: RenderMode.Prerender
   }

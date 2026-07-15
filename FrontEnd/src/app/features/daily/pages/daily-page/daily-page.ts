@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { Button } from '../../../../shared/ui/button/button';
 import { GuessCluesGrid } from '../../components/guess-clues/guess-clues';
 import { MovieAutocomplete } from '../../components/movie-autocomplete/movie-autocomplete';
+import { NextChallengeCountdown } from '../../components/next-challenge-countdown/next-challenge-countdown';
 import { PreviousGuessCard } from '../../components/previous-guess-card/previous-guess-card';
 import type {
   DailyChallengeState,
@@ -32,7 +33,7 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
 @Component({
   selector: 'app-daily-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Button, MovieAutocomplete, GuessCluesGrid, PreviousGuessCard],
+  imports: [Button, MovieAutocomplete, GuessCluesGrid, PreviousGuessCard, NextChallengeCountdown],
   template: `
     <section class="mx-auto max-w-6xl px-6 py-16">
       <div class="grid gap-4 lg:grid-cols-[1.4fr_0.9fr]">
@@ -58,8 +59,14 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
           @if (loading()) {
             <p class="mt-8 text-sm text-muted">Carregando sessão...</p>
           } @else if (session(); as currentSession) {
-            <div class="mt-8 grid gap-6 lg:grid-cols-[260px_1fr]">
-              <div class="aspect-[2/3] w-full overflow-hidden rounded-2xl border border-border bg-surface-elevated shadow-lg">
+            <div
+              class="mt-8 grid gap-6"
+              [class]="currentSession.image_source === 'backdrop' ? 'lg:grid-cols-1' : 'lg:grid-cols-[260px_1fr]'"
+            >
+              <div
+                class="w-full self-start overflow-hidden rounded-2xl border border-border bg-surface-elevated shadow-lg"
+                [class]="currentSession.image_source === 'backdrop' ? 'aspect-video' : 'aspect-[2/3]'"
+              >
                 @if (posterSrc(currentSession.poster_url); as posterSrcValue) {
                   <img
                     class="h-full w-full object-cover"
@@ -113,6 +120,10 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
                       {{ currentSession.reveal.original_title }} · {{ currentSession.reveal.release_year ?? '—' }}
                     </p>
                   </div>
+                }
+
+                @if (currentSession.status !== 'playing') {
+                  <app-next-challenge-countdown (next)="onNextChallenge()" />
                 }
 
                 @if (lastGuess(); as guessResult) {
@@ -202,6 +213,10 @@ export class DailyPage implements OnInit {
   });
 
   ngOnInit(): void {
+    this.dailyGameService.loadSession();
+  }
+
+  protected onNextChallenge(): void {
     this.dailyGameService.loadSession();
   }
 

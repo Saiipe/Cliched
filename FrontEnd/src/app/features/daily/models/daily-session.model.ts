@@ -90,6 +90,7 @@ export interface DailyChallengeState {
   readonly score: number | null;
   readonly poster_level: number;
   readonly poster_url: string;
+  readonly image_source: 'poster' | 'backdrop';
   readonly title_hint: DailyTitleHint;
   readonly previous_guesses: readonly DailyPreviousGuess[];
   readonly reveal: DailyReveal | null;

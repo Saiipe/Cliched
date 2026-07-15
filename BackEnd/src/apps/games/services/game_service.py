@@ -114,6 +114,7 @@ class GameService:
             "score": session.score if session else None,
             "poster_level": level,
             "poster_url": poster_url,
+            "image_source": challenge.image_source,
             "title_hint": self._title_hint(challenge.movie),
             "previous_guesses": self._previous_guesses(session),
             "reveal": self._reveal(challenge.movie, level) if finished else None,

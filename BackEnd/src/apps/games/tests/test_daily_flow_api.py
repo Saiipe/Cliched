@@ -29,6 +29,7 @@ def tmdb_movie_payload(tmdb_id: int) -> dict:
         "origin_country": ["US"],
         "runtime": 100 + (tmdb_id % 60),
         "poster_path": "/poster.jpg",
+        "backdrop_path": "/backdrop.jpg",
         "popularity": 50.0,
         "credits": {
             "crew": [{"job": "Director", "name": f"Director {tmdb_id}"}],
@@ -69,6 +70,19 @@ class DailyFlowTestsBase(APITestCase):
         self.mock_tmdb.get_movie_with_credits.side_effect = (
             lambda tmdb_id, **kw: tmdb_movie_payload(tmdb_id)
         )
+        self.mock_tmdb.get_movie.side_effect = (
+            lambda tmdb_id, **kw: tmdb_movie_payload(tmdb_id)
+        )
+        self.mock_tmdb.get_movie_images.return_value = {
+            "posters": [
+                {"file_path": "/poster-alt-1.jpg", "vote_average": 5.8, "iso_639_1": "pt"},
+                {"file_path": "/poster-alt-2.jpg", "vote_average": 5.2, "iso_639_1": None},
+            ],
+            "backdrops": [
+                {"file_path": "/backdrop-alt-1.jpg", "vote_average": 6.1},
+                {"file_path": "/backdrop-alt-2.jpg", "vote_average": 5.9},
+            ],
+        }
 
         # Guess syncing goes through a fresh MovieSyncService -> TMDBService.
         patcher_sync_tmdb = patch(

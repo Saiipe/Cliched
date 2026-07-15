@@ -24,6 +24,17 @@ class MovieSyncService:
         payload = self._tmdb.get_movie_with_credits(tmdb_id)
         return MovieRepository.create(**self._map_payload(payload))
 
+    def refresh_media(self, movie: Movie) -> Movie:
+        """Re-fetch just the artwork paths for an already-synced movie.
+
+        Movies synced before backdrop_path existed have it empty; the admin
+        image picker needs it without re-importing the whole snapshot."""
+        payload = self._tmdb.get_movie(movie.tmdb_id)
+        movie.poster_path = payload.get("poster_path") or movie.poster_path
+        movie.backdrop_path = payload.get("backdrop_path") or ""
+        movie.save(update_fields=["poster_path", "backdrop_path", "updated_at"])
+        return movie
+
     @staticmethod
     def _map_payload(payload: dict) -> dict:
         release_date = None
@@ -55,5 +66,6 @@ class MovieSyncService:
             "top_cast": top_cast,
             "runtime": payload.get("runtime") or None,
             "poster_path": payload.get("poster_path") or "",
+            "backdrop_path": payload.get("backdrop_path") or "",
             "popularity": payload.get("popularity") or 0,
         }

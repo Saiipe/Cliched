@@ -45,6 +45,17 @@ class TMDBService:
         )
         return response.json()
 
+    def get_movie_images(self, tmdb_id: int) -> dict:
+        """Full art gallery (many posters/backdrops), unlike movie-details'
+        single default poster_path/backdrop_path. include_image_language
+        widens the pool beyond the (usually near-empty) untagged-only
+        default filter."""
+        response = self._client.get(
+            f"movie/{tmdb_id}/images",
+            params={"include_image_language": "pt,en,null"},
+        )
+        return response.json()
+
     def discover_movies(self, page: int = 1, language: str = "pt-BR", **filters) -> dict:
         params = {
             "page": page,

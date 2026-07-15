@@ -42,6 +42,9 @@ export class DailyGameService {
       .subscribe({
         next: (response) => {
           this.sessionState.set(response.data);
+          // Evita mostrar o "último palpite" de uma partida encerrada quando
+          // um novo desafio é carregado (ex.: após o contador para o próximo).
+          this.guessState.set(null);
         },
         error: (error: HttpErrorResponse) => {
           this.errorState.set(this.resolveErrorMessage(error));

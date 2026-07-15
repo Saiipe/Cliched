@@ -10,15 +10,21 @@ from shared.exceptions.custom_exceptions import ResourceNotFound
 from shared.services.http_client import RetryableAPIClient
 
 TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
+TMDB_BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w780"
 
 
 class PosterService:
-    """Downloads the TMDB poster once per challenge and pre-renders one JPEG
+    """Downloads the TMDB art once per challenge and pre-renders one JPEG
     per pixelation level. Files are keyed by challenge id (never by tmdb id)
     so their paths leak nothing about the answer."""
 
     def generate_levels(self, challenge: DailyChallenge) -> None:
-        original = self._download(challenge.movie.poster_path)
+        is_backdrop = challenge.image_source == DailyChallenge.ImageSource.BACKDROP
+        base_url = TMDB_BACKDROP_BASE_URL if is_backdrop else TMDB_IMAGE_BASE_URL
+        default_path = challenge.movie.backdrop_path if is_backdrop else challenge.movie.poster_path
+        image_path = challenge.image_path or default_path
+
+        original = self._download(image_path, base_url)
         directory = self._challenge_dir(challenge.pk)
         directory.mkdir(parents=True, exist_ok=True)
 
@@ -45,9 +51,9 @@ class PosterService:
         return Path(settings.MEDIA_ROOT) / "posters" / "daily" / str(challenge_id)
 
     @staticmethod
-    def _download(poster_path: str) -> Image.Image:
-        client = RetryableAPIClient(base_url=TMDB_IMAGE_BASE_URL)
-        response = client.get(poster_path)
+    def _download(image_path: str, base_url: str) -> Image.Image:
+        client = RetryableAPIClient(base_url=base_url)
+        response = client.get(image_path)
         return Image.open(BytesIO(response.content))
 
     @staticmethod

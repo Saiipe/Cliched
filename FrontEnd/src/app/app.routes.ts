@@ -56,6 +56,20 @@ export const routes: Routes = [
             (m) => m.DashboardPage,
           ),
       },
+      {
+        path: 'jogos',
+        loadComponent: () =>
+          import('./features/admin/games/pages/games-page/games-page').then(
+            (m) => m.AdminGamesPage,
+          ),
+      },
+      {
+        path: 'desafio-diario',
+        loadComponent: () =>
+          import(
+            './features/admin/daily-challenge/pages/daily-challenge-page/daily-challenge-page'
+          ).then((m) => m.AdminDailyChallengePage),
+      },
     ],
   },
 ];

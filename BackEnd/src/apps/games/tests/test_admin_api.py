@@ -22,6 +22,9 @@ class AdminNextChallengeTests(DailyFlowTestsBase):
         )
         self.client.force_authenticate(self.admin)
 
+    def get_current(self):
+        return self.client.get("/api/v1/games/daily/current/")
+
     def get_next(self):
         return self.client.get("/api/v1/games/daily/next/")
 
@@ -29,11 +32,29 @@ class AdminNextChallengeTests(DailyFlowTestsBase):
         body = {} if tmdb_id is None else {"tmdb_id": tmdb_id}
         return self.client.post("/api/v1/games/daily/next/swap/", body)
 
-    def test_requires_staff(self):
-        player = User.objects.create_user(username="player", password="senha-forte-123")
-        self.client.force_authenticate(player)
-        self.assertEqual(self.get_next().status_code, 403)
-        self.assertEqual(self.swap().status_code, 403)
+    def set_image(self, image_source, image_path=None):
+        body = {"image_source": image_source}
+        if image_path is not None:
+            body["image_path"] = image_path
+        return self.client.post("/api/v1/games/daily/next/image/", body)
+
+    def gallery(self):
+        return self.client.get("/api/v1/games/daily/next/image/gallery/")
+
+    def test_temporarily_open_without_auth(self):
+        # TODO(auth): the admin endpoints are AllowAny on purpose until the
+        # frontend admin panel gets a login. Flip this test back to asserting
+        # 403 for non-staff when IsAdmin is restored.
+        self.client.force_authenticate(None)
+        self.assertEqual(self.get_next().status_code, 200)
+
+    def test_get_current_reveals_todays_movie_and_is_not_swappable(self):
+        response = self.get_current()
+        self.assertEqual(response.status_code, 200)
+        data = response.json()["data"]
+        self.assertEqual(data["date"], str(timezone.localdate()))
+        self.assertFalse(data["swappable"])
+        self.assertEqual(data["movie"]["tmdb_id"], ANSWER_TMDB_ID)
 
     def test_get_next_creates_and_reveals_tomorrows_movie(self):
         response = self.get_next()
@@ -83,3 +104,89 @@ class AdminNextChallengeTests(DailyFlowTestsBase):
     def test_swap_invalid_tmdb_id(self):
         response = self.swap(tmdb_id=-1)
         self.assertEqual(response.status_code, 400)
+
+    def test_set_image_source_backdrop(self):
+        self.get_next()
+        response = self.set_image("backdrop")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()["data"]
+        self.assertEqual(data["image_source"], "backdrop")
+        self.assertEqual(data["movie"]["backdrop_path"], "/backdrop.jpg")
+
+    def test_set_image_source_back_to_poster(self):
+        self.get_next()
+        self.set_image("backdrop")
+        response = self.set_image("poster")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["data"]["image_source"], "poster")
+
+    def test_set_image_source_invalid_value(self):
+        self.get_next()
+        response = self.set_image("gif")
+        self.assertEqual(response.status_code, 400)
+
+    def test_swap_resets_image_source_to_poster(self):
+        self.get_next()
+        self.set_image("backdrop")
+        response = self.swap(tmdb_id=OTHER_TMDB_ID)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["data"]["image_source"], "poster")
+
+    def test_gallery_lists_posters_only(self):
+        self.get_next()
+        response = self.gallery()
+        self.assertEqual(response.status_code, 200)
+        data = response.json()["data"]
+        self.assertEqual(
+            [p["file_path"] for p in data["posters"]], ["/poster-alt-1.jpg", "/poster-alt-2.jpg"]
+        )
+        self.assertEqual([p["iso_639_1"] for p in data["posters"]], ["pt", None])
+        self.assertNotIn("backdrops", data)
+
+    def test_set_image_with_specific_path_from_gallery(self):
+        self.get_next()
+        response = self.set_image("backdrop", image_path="/backdrop-alt-2.jpg")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()["data"]
+        self.assertEqual(data["image_source"], "backdrop")
+        self.assertEqual(data["image_path"], "/backdrop-alt-2.jpg")
+
+    def test_swap_picks_a_fresh_textless_default(self):
+        # A new movie's old art choice may not exist anymore — swap must
+        # pick a new textless default rather than keep a stale image_path
+        # or fall back to the (often title-text-covered) TMDB default.
+        self.get_next()
+        self.set_image("backdrop", image_path="/backdrop-alt-2.jpg")
+        response = self.swap(tmdb_id=OTHER_TMDB_ID)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()["data"]
+        self.assertEqual(data["image_source"], "poster")
+        self.assertEqual(data["image_path"], "/poster-alt-2.jpg")
+
+    def test_new_challenge_defaults_to_textless_poster(self):
+        response = self.get_next()
+        data = response.json()["data"]
+        self.assertEqual(data["image_source"], "poster")
+        self.assertEqual(data["image_path"], "/poster-alt-2.jpg")
+
+    def test_advance_makes_tomorrow_todays_challenge(self):
+        # Order matters for the mock: discover_movies only ever offers
+        # ANSWER_TMDB_ID, so tomorrow must claim a *different* movie (via
+        # explicit swap) before today's challenge is created — otherwise
+        # both random picks compete for the same single candidate.
+        self.get_next()  # creates tomorrow's challenge
+        self.swap(tmdb_id=OTHER_TMDB_ID)  # give tomorrow a distinct movie
+        self.get_daily()  # creates today's challenge, with a live session
+
+        response = self.client.post("/api/v1/games/daily/advance/")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()["data"]
+        today = timezone.localdate()
+        self.assertEqual(data["date"], str(today))
+        self.assertEqual(data["movie"]["tmdb_id"], OTHER_TMDB_ID)
+
+        # Old today's challenge (and its session) is gone; the daily
+        # endpoint now serves the advanced movie as a fresh session.
+        self.assertEqual(DailyChallenge.objects.filter(date=today).count(), 1)
+        daily_response = self.get_daily()
+        self.assertEqual(daily_response.json()["data"]["attempts_used"], 0)

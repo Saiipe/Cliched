@@ -17,8 +17,8 @@ class ChallengeRepository:
         return DailyChallenge.objects.select_related("movie").filter(date=day).first()
 
     @staticmethod
-    def create(day: date, movie) -> DailyChallenge:
-        return DailyChallenge.objects.create(date=day, movie=movie)
+    def create(day: date, movie, image_path: str = "") -> DailyChallenge:
+        return DailyChallenge.objects.create(date=day, movie=movie, image_path=image_path)
 
     @staticmethod
     def used_tmdb_ids() -> set[int]:

@@ -23,6 +23,7 @@ class Movie(TimestampedModel):
     top_cast = models.JSONField(default=list)  # [{"id": 819, "name": "..."}]
     runtime = models.PositiveSmallIntegerField(null=True, blank=True)
     poster_path = models.CharField(max_length=255, blank=True, default="")
+    backdrop_path = models.CharField(max_length=255, blank=True, default="")
     popularity = models.FloatField(default=0)
 
     def __str__(self):

@@ -10,6 +10,7 @@ interface AdminNavLink {
 
 const NAV_LINKS: readonly AdminNavLink[] = [
   { label: 'Dashboard', path: '/admin' },
+  { label: 'Jogos', path: '/admin/jogos' },
   { label: 'Filmes', path: null },
   { label: 'Sinopses', path: null },
   { label: 'Usuários', path: null },
