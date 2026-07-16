@@ -3,14 +3,17 @@ import { RouterLink } from '@angular/router';
 import { IconMovie, IconSparkles, IconTrophy } from '@tabler/icons-angular';
 import { Badge } from '../../../../shared/ui/badge/badge';
 import { Button } from '../../../../shared/ui/button/button';
+import { CinemaDoodles } from '../../../../shared/ui/cinema-doodles/cinema-doodles';
 import { Icon } from '../../../../shared/ui/icon/icon';
 
 @Component({
   selector: 'app-hero',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Badge, Button, Icon],
+  imports: [RouterLink, Badge, Button, CinemaDoodles, Icon],
   template: `
-    <section class="flex flex-col items-center gap-6 px-6 py-24 text-center">
+    <section class="relative flex flex-col items-center gap-6 overflow-hidden px-6 py-24 text-center">
+      <app-cinema-doodles variant="hero" />
+
       <app-badge>
         <app-icon [icon]="sparklesIcon" [size]="14" />
         Novo desafio todos os dias
