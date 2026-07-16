@@ -23,12 +23,17 @@ export class DailyGameService {
   private readonly loadingState = signal(false);
   private readonly submittingState = signal(false);
   private readonly errorState = signal<string | null>(null);
+  private readonly posterState = signal<string | null>(null);
 
   readonly session = this.sessionState.asReadonly();
   readonly lastGuess = this.guessState.asReadonly();
   readonly loading = this.loadingState.asReadonly();
   readonly submitting = this.submittingState.asReadonly();
   readonly error = this.errorState.asReadonly();
+  /** Object URL do pôster — buscado via HttpClient (não <img src> direto)
+   * porque a imagem exige credenciais: JWT no header quando logado, ou o
+   * X-Anon-Token da sessão anônima. Uma tag <img> não envia nenhum dos dois. */
+  readonly posterObjectUrl = this.posterState.asReadonly();
 
   loadSession(): void {
     this.loadingState.set(true);
@@ -45,6 +50,7 @@ export class DailyGameService {
           // Evita mostrar o "último palpite" de uma partida encerrada quando
           // um novo desafio é carregado (ex.: após o contador para o próximo).
           this.guessState.set(null);
+          this.loadPoster(response.data.poster_url);
         },
         error: (error: HttpErrorResponse) => {
           this.errorState.set(this.resolveErrorMessage(error));
@@ -77,6 +83,7 @@ export class DailyGameService {
           if (response.data.anon_token) {
             this.anonSession.storeToken(response.data.anon_token);
           }
+          this.loadPoster(response.data.poster_url);
         },
         error: (error: HttpErrorResponse) => {
           this.errorState.set(this.resolveErrorMessage(error));
@@ -101,22 +108,27 @@ export class DailyGameService {
       );
   }
 
-  posterUrl(path: string | null | undefined): string | null {
+  private loadPoster(path: string | null | undefined): void {
     if (!path) {
-      return null;
+      this.setPoster(null);
+      return;
     }
 
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      return path;
-    }
+    const url = path.startsWith('http') ? path : `${environment.apiBaseUrl}${path}`;
+    this.http
+      .get(url, { responseType: 'blob', headers: this.anonSession.headers() })
+      .subscribe({
+        next: (blob) => this.setPoster(URL.createObjectURL(blob)),
+        error: () => this.setPoster(null),
+      });
+  }
 
-    const token = this.anonSession.getToken();
-    if (!token) {
-      return `${environment.apiBaseUrl}${path}`;
+  private setPoster(url: string | null): void {
+    const previous = this.posterState();
+    if (previous) {
+      URL.revokeObjectURL(previous);
     }
-
-    const separator = path.includes('?') ? '&' : '?';
-    return `${environment.apiBaseUrl}${path}${separator}token=${encodeURIComponent(token)}`;
+    this.posterState.set(url);
   }
 
   private buildUrl(path: string): string {

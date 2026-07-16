@@ -67,7 +67,7 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
                 class="w-full self-start overflow-hidden rounded-2xl border border-border bg-surface-elevated shadow-lg"
                 [class]="currentSession.image_source === 'backdrop' ? 'aspect-video' : 'aspect-[2/3]'"
               >
-                @if (posterSrc(currentSession.poster_url); as posterSrcValue) {
+                @if (posterUrl(); as posterSrcValue) {
                   <img
                     class="h-full w-full object-cover"
                     [src]="posterSrcValue"
@@ -242,7 +242,5 @@ export class DailyPage implements OnInit {
     return session.previous_guesses.slice().reverse();
   }
 
-  protected posterSrc(path: string | null): string | null {
-    return this.dailyGameService.posterUrl(path);
-  }
+  protected readonly posterUrl = this.dailyGameService.posterObjectUrl;
 }

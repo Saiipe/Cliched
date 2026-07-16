@@ -1,4 +1,19 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router, Routes } from '@angular/router';
+
+import { AuthModalService } from './features/auth/services/auth-modal.service';
+import { TokenStorageService } from './core/services/token-storage.service';
+
+/** Página exige sessão — sem token, abre o modal de login e volta pra Home
+ * (não existe mais uma página /login própria para redirecionar). */
+const authGuard = () => {
+  const storage = inject(TokenStorageService);
+  if (storage.access() !== null) {
+    return true;
+  }
+  inject(AuthModalService).open('login');
+  return inject(Router).createUrlTree(['/']);
+};
 
 export const routes: Routes = [
   {
@@ -47,6 +62,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/contact/pages/contact-page/contact-page').then(
             (m) => m.ContactPage,
+          ),
+      },
+      {
+        path: 'alterar-senha',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/auth/pages/change-password-page/change-password-page').then(
+            (m) => m.ChangePasswordPage,
           ),
       },
       {

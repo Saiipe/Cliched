@@ -15,7 +15,7 @@ import { Icon } from '../../../../shared/ui/icon/icon';
       class="flex min-h-[70dvh] flex-col items-center justify-center gap-6 px-6 py-24 text-center"
     >
       <span class="flex size-16 items-center justify-center rounded-2xl bg-surface-elevated">
-        <app-icon [icon]="movieOffIcon" [size]="28" class="text-primary" />
+        <app-icon [icon]="movieOffIcon" [size]="28" class="text-secondary" />
       </span>
 
       <p
