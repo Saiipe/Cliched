@@ -4,10 +4,11 @@ export type CinemaDoodlesVariant = 'not-found' | 'hero';
 
 /**
  * Ilustrações line-art de cinema (película, claquete, ingresso, pipoca,
- * câmera, faíscas) para preencher o fundo de seções-herói. Puramente
- * decorativo: aria-hidden, sem eventos de ponteiro, e as animações
- * respeitam prefers-reduced-motion. O pai precisa ser `relative`
- * (e idealmente `overflow-hidden`).
+ * câmera) para preencher o fundo de seções-herói. As estrelas vivem à parte,
+ * em `SparkleField` (montado globalmente no shell). Puramente decorativo:
+ * aria-hidden, sem eventos de ponteiro, e as animações respeitam
+ * prefers-reduced-motion. O pai precisa ser `relative` (e idealmente
+ * `overflow-hidden`).
  */
 @Component({
   selector: 'app-cinema-doodles',
@@ -105,17 +106,6 @@ export type CinemaDoodlesVariant = 'not-found' | 'hero';
       <circle cx="34" cy="26" r="5" class="text-secondary/70" />
       <circle cx="70" cy="26" r="5" class="text-secondary/70" />
     </svg>
-
-    <!-- Faíscas -->
-    <svg class="sparkle absolute left-[28%] top-[30%] w-6 text-secondary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-      <path d="M12 3 V21 M3 12 H21" />
-    </svg>
-    <svg class="sparkle-delayed absolute right-[26%] top-[58%] w-4 text-secondary/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-      <path d="M12 3 V21 M3 12 H21" />
-    </svg>
-    <svg class="sparkle absolute left-[20%] top-[64%] w-4 text-muted/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-      <path d="M12 3 V21 M3 12 H21" />
-    </svg>
   `,
   styles: `
     @keyframes illustration-float {
@@ -127,17 +117,6 @@ export type CinemaDoodlesVariant = 'not-found' | 'hero';
       }
     }
 
-    @keyframes sparkle-pulse {
-      from {
-        opacity: 0.25;
-        scale: 0.8;
-      }
-      to {
-        opacity: 1;
-        scale: 1.1;
-      }
-    }
-
     .illustration-float {
       animation: illustration-float 5s ease-in-out infinite alternate;
     }
@@ -146,19 +125,9 @@ export type CinemaDoodlesVariant = 'not-found' | 'hero';
       animation: illustration-float 6s ease-in-out 1.5s infinite alternate;
     }
 
-    .sparkle {
-      animation: sparkle-pulse 2.4s ease-in-out infinite alternate;
-    }
-
-    .sparkle-delayed {
-      animation: sparkle-pulse 3s ease-in-out 1s infinite alternate;
-    }
-
     @media (prefers-reduced-motion: reduce) {
       .illustration-float,
-      .illustration-float-delayed,
-      .sparkle,
-      .sparkle-delayed {
+      .illustration-float-delayed {
         animation: none;
       }
     }
