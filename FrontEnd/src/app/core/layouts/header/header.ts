@@ -108,11 +108,10 @@ const NAV_LINKS: readonly NavLink[] = [
             <button type="button" class="text-sm text-foreground" (click)="authModal.open('login')">
               Login
             </button>
+            <app-button variant="primary" (click)="authModal.open('register')">
+              Cadastre-se
+            </app-button>
           }
-
-          <a routerLink="/jogar">
-            <app-button variant="primary">Jogar agora</app-button>
-          </a>
         </div>
       </div>
     </header>
