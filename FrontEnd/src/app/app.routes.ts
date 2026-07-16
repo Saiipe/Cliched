@@ -67,6 +67,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/legal/pages/legal-page/legal-page').then((m) => m.LegalPage),
       },
+      {
+        path: '**',
+        loadComponent: () =>
+          import('./features/not-found/pages/not-found-page/not-found-page').then(
+            (m) => m.NotFoundPage,
+          ),
+      },
     ],
   },
   {
@@ -103,5 +110,14 @@ export const routes: Routes = [
           ),
       },
     ],
+  },
+  {
+    // Fallback final — cobre caminhos que nem chegam a bater com o prefixo
+    // 'admin' (o wildcard lá dentro do shell público já cobre o resto).
+    path: '**',
+    loadComponent: () =>
+      import('./features/not-found/pages/not-found-page/not-found-page').then(
+        (m) => m.NotFoundPage,
+      ),
   },
 ];

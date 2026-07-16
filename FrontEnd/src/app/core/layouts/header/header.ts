@@ -21,8 +21,10 @@ const NAV_LINKS: readonly NavLink[] = [
   imports: [RouterLink, RouterLinkActive, Button, NgOptimizedImage],
   template: `
     <header class="sticky top-0 z-10 border-b border-border bg-bg/50 backdrop-blur-md">
-      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <a routerLink="/" class="flex items-center gap-2.5">
+      <div
+        class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:justify-normal"
+      >
+        <a routerLink="/" class="flex items-center gap-2.5 justify-self-start">
           <img
             ngSrc="android-chrome-512x512.png"
             width="32"
@@ -34,7 +36,7 @@ const NAV_LINKS: readonly NavLink[] = [
           <span class="text-sm font-semibold text-foreground">Cliched</span>
         </a>
 
-        <nav aria-label="Navegação principal" class="hidden items-center gap-8 md:flex">
+        <nav aria-label="Navegação principal" class="hidden items-center gap-8 justify-self-center md:flex">
           @for (link of navLinks; track link.path) {
             <a
               [routerLink]="link.path"
@@ -47,7 +49,7 @@ const NAV_LINKS: readonly NavLink[] = [
           }
         </nav>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 justify-self-end">
           <a routerLink="/login" class="text-sm text-foreground">Login</a>
           <app-button variant="primary">Jogar agora</app-button>
         </div>
