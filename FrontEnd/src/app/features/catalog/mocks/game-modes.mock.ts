@@ -16,7 +16,7 @@ export const GAME_MODES_MOCK: readonly GameMode[] = [
   {
     id: 'synopsis',
     title: 'Sinopse',
-    description: 'Adivinhe o filme lendo apenas a sinopse. Um clássico para começar.',
+    description: 'Adivinhe o filme lendo apenas a sinopse. ',
     icon: IconFileText,
     status: 'available',
     route: '/jogar/sinopse',

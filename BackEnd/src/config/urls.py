@@ -11,6 +11,7 @@ from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 api_v1_patterns = [
+    path("common/", include("apps.common.urls")),
     path("auth/", include("apps.authentication.urls")),
     path("users/", include("apps.users.urls")),
     path("movies/", include("apps.movies.urls")),

@@ -42,6 +42,31 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/about/pages/about-page/about-page').then((m) => m.AboutPage),
       },
+      {
+        path: 'contato',
+        loadComponent: () =>
+          import('./features/contact/pages/contact-page/contact-page').then(
+            (m) => m.ContactPage,
+          ),
+      },
+      {
+        path: 'privacidade',
+        data: { legalType: 'privacidade' },
+        loadComponent: () =>
+          import('./features/legal/pages/legal-page/legal-page').then((m) => m.LegalPage),
+      },
+      {
+        path: 'termos',
+        data: { legalType: 'termos' },
+        loadComponent: () =>
+          import('./features/legal/pages/legal-page/legal-page').then((m) => m.LegalPage),
+      },
+      {
+        path: 'cookies',
+        data: { legalType: 'cookies' },
+        loadComponent: () =>
+          import('./features/legal/pages/legal-page/legal-page').then((m) => m.LegalPage),
+      },
     ],
   },
   {
@@ -69,6 +94,13 @@ export const routes: Routes = [
           import(
             './features/admin/daily-challenge/pages/daily-challenge-page/daily-challenge-page'
           ).then((m) => m.AdminDailyChallengePage),
+      },
+      {
+        path: 'configuracoes',
+        loadComponent: () =>
+          import('./features/admin/settings/pages/settings-page/settings-page').then(
+            (m) => m.AdminSettingsPage,
+          ),
       },
     ],
   },

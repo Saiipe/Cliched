@@ -1,9 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GameModeCard } from '../../../catalog/components/game-mode-card/game-mode-card';
 import { CatalogService } from '../../../catalog/services/catalog.service';
-
-const HIGHLIGHTED_COUNT = 4;
 
 @Component({
   selector: 'app-game-modes-section',
@@ -20,17 +18,17 @@ const HIGHLIGHTED_COUNT = 4;
       </div>
 
       <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        @for (gameMode of highlightedGameModes(); track gameMode.id) {
+        @for (gameMode of catalogService.featuredGameModes(); track gameMode.id) {
           <app-game-mode-card [gameMode]="gameMode" />
+        } @empty {
+          <p class="col-span-full text-sm text-muted">
+            Nenhum modo em destaque configurado — escolha em Admin › Jogos.
+          </p>
         }
       </div>
     </section>
   `,
 })
 export class GameModesSection {
-  private readonly catalogService = inject(CatalogService);
-
-  protected readonly highlightedGameModes = computed(() =>
-    this.catalogService.getGameModes()().slice(0, HIGHLIGHTED_COUNT),
-  );
+  protected readonly catalogService = inject(CatalogService);
 }

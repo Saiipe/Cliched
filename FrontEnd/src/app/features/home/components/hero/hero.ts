@@ -30,13 +30,13 @@ import { Icon } from '../../../../shared/ui/icon/icon';
 
       <div class="flex flex-wrap items-center justify-center gap-3">
         <a routerLink="/jogar">
-          <app-button variant="primary">
+          <app-button variant="primary" [glow]="true">
             <app-icon [icon]="movieIcon" [size]="16" />
             Jogar agora
           </app-button>
         </a>
         <a routerLink="/ranking">
-          <app-button variant="secondary">
+          <app-button variant="secondary" [glow]="true">
             <app-icon [icon]="trophyIcon" [size]="16" />
             Ver ranking
           </app-button>

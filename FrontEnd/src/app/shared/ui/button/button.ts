@@ -10,7 +10,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
       [type]="type()"
       [disabled]="disabled()"
       class="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium
-        transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+        transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
         focus-visible:ring-offset-bg disabled:cursor-not-allowed disabled:opacity-50"
       [class]="buttonClass()"
     >
@@ -26,10 +26,14 @@ export class Button {
   readonly type = input<'button' | 'submit' | 'reset'>('button');
   readonly disabled = input<boolean>(false);
   readonly fullWidth = input<boolean>(false);
+  readonly glow = input<boolean>(false);
 
   protected readonly buttonClass = computed(() => {
     const variantClass = this.variantClasses();
-    return this.fullWidth() ? `${variantClass} w-full` : variantClass;
+    const glowClass = this.glow()
+      ? 'hover:border-secondary/60 hover:shadow-[0_0_24px_-4px_var(--secondary)]'
+      : '';
+    return [variantClass, glowClass, this.fullWidth() ? 'w-full' : ''].filter(Boolean).join(' ');
   });
 
   private readonly variantClasses = computed(() => {
@@ -37,10 +41,10 @@ export class Button {
       case 'secondary':
         return 'bg-surface text-foreground border border-border hover:bg-surface-elevated focus-visible:ring-border';
       case 'ghost':
-        return 'bg-transparent text-foreground hover:bg-surface focus-visible:ring-border';
+        return 'border border-transparent bg-transparent text-foreground hover:bg-surface focus-visible:ring-border';
       case 'primary':
       default:
-        return 'bg-foreground text-bg hover:opacity-90 focus-visible:ring-foreground';
+        return 'border border-transparent bg-foreground text-bg hover:opacity-90 focus-visible:ring-foreground';
     }
   });
 }

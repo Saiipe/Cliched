@@ -2,6 +2,15 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
   {
+    // A Home lê os destaques configurados no admin (dado global — não
+    // depende de sessão do navegador, então não sofre o problema acima —
+    // mas muda a qualquer momento sem passar por um novo build). SSR por
+    // requisição em vez de prerender estático, senão a Home ficaria presa
+    // no snapshot do build até o próximo deploy.
+    path: '',
+    renderMode: RenderMode.Server,
+  },
+  {
     // Sessão do desafio diário depende do token anônimo salvo no localStorage
     // do navegador (não existe durante o SSR). Se essa rota fosse
     // pré-renderizada/SSR, a resposta da API sem token viraria cache de
@@ -15,6 +24,17 @@ export const serverRoutes: ServerRoute[] = [
     // Mesmo motivo: consome a API admin ao carregar (e criaria o desafio de
     // amanhã em build-time se fosse pré-renderizada).
     path: 'admin/desafio-diario',
+    renderMode: RenderMode.Client,
+  },
+  {
+    // Painel de gerência dos modos de jogo — interativo e sem valor de SEO,
+    // mesmo tratamento das outras telas admin acima.
+    path: 'admin/jogos',
+    renderMode: RenderMode.Client,
+  },
+  {
+    // Editor de arrastar-e-soltar dos destaques da Home — mesmo motivo.
+    path: 'admin/configuracoes',
     renderMode: RenderMode.Client,
   },
   {

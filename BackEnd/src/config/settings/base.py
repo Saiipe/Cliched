@@ -128,7 +128,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = "pt-br"
-TIME_ZONE = "UTC"
+# "Hoje"/meia-noite do desafio diário (timezone.localdate() em
+# DailyChallengeService) precisa bater com a meia-noite real do público
+# (pt-br) — UTC deixava o desafio virar 3h antes do contador do frontend
+# chegar em 00:00:00 local.
+TIME_ZONE = env("DJANGO_TIME_ZONE", "America/Sao_Paulo")
 USE_I18N = True
 USE_TZ = True
 

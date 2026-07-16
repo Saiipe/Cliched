@@ -14,7 +14,7 @@ const NAV_LINKS: readonly AdminNavLink[] = [
   { label: 'Filmes', path: null },
   { label: 'Sinopses', path: null },
   { label: 'Usuários', path: null },
-  { label: 'Configurações', path: null },
+  { label: 'Configurações', path: '/admin/configuracoes' },
 ];
 
 /**
