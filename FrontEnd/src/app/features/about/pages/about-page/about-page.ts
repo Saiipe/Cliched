@@ -8,10 +8,11 @@ import { ABOUT_HIGHLIGHTS_MOCK } from '../../mocks/about-highlights.mock';
   imports: [InfoCard],
   template: `
     <section class="mx-auto max-w-6xl px-6 py-16">
-      <h1 class="text-4xl font-bold text-foreground">Sobre o jogo</h1>
+      <h1 class="text-4xl font-bold text-foreground">Sobre o Jogo</h1>
       <p class="mt-3 max-w-2xl text-muted">
-        Adivinhe o Filme é um jogo diário feito para fãs de cinema. Inspirado na simplicidade do
-        Termo, ele traz desafios curtos, viciantes e sempre novos.
+        Cliched é uma plataforma de jogos diários para fãs de cinema. 
+        Inspirada na simplicidade do Termo, 
+        ela oferece desafios curtos, envolventes e sempre novos.
       </p>
 
       <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
