@@ -5,7 +5,7 @@ from apps.games.models import GameSession
 
 class SessionAdoptionService:
     """Transfere o progresso de uma sessão anônima para a conta no momento
-    do login/cadastro — é o que faz "salvar o progresso" funcionar quando o
+    do login/cadastro: é o que faz "salvar o progresso" funcionar quando o
     jogador começou a jogar sem conta."""
 
     @staticmethod
@@ -18,7 +18,7 @@ class SessionAdoptionService:
             return
 
         for session in GameSession.objects.filter(anon_token=token):
-            # A conta já jogou este desafio por si — o progresso da conta vence.
+            # A conta já jogou este desafio por si, então o progresso da conta vence.
             if GameSession.objects.filter(
                 challenge=session.challenge, user=user
             ).exists():

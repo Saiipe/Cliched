@@ -9,7 +9,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     """Cadastro público.
 
     A lista de `fields` é a whitelist de segurança: flags como
-    is_superuser (admin) e is_premium ficam de fora de propósito — só
+    is_superuser (admin) e is_premium ficam de fora de propósito: só
     podem ser alteradas direto no banco, nunca por payload do cliente."""
 
     password = serializers.CharField(write_only=True)

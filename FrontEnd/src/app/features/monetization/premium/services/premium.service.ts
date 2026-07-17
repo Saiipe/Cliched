@@ -3,7 +3,7 @@ import { PremiumPlan } from '../models/premium-plan.enum';
 
 /**
  * Fonte única de verdade sobre o plano do usuário. Hoje fixo em `Free`
- * (sem integração com pagamento/assinatura ainda) — quando `subscriptions`
+ * (sem integração com pagamento/assinatura ainda). Quando `subscriptions`
  * for implementado, ele passa a atualizar este signal em vez de um valor fixo.
  */
 @Injectable({ providedIn: 'root' })

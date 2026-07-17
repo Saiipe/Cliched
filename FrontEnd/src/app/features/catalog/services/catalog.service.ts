@@ -12,7 +12,7 @@ interface FeaturedGameModesResponse {
 }
 
 // Sem escolha salva ainda no backend (primeiro acesso/admin nunca mexeu),
-// estes são os destaques da Home — mesmo comportamento de antes de existir
+// estes são os destaques da Home, mesmo comportamento de antes de existir
 // a opção de personalizar.
 const DEFAULT_FEATURED_IDS: readonly string[] = ['synopsis', 'frame', 'soundtrack', 'cast'];
 
@@ -22,7 +22,7 @@ export class CatalogService {
 
   private readonly gameModes = signal<readonly GameMode[]>(GAME_MODES_MOCK);
   // Destaque é configuração global do site (todo visitante vê a mesma Home),
-  // por isso vive no backend — não daria pra guardar em localStorage, que é
+  // por isso vive no backend: não daria pra guardar em localStorage, que é
   // por navegador.
   private readonly featuredIds = signal<readonly string[]>(DEFAULT_FEATURED_IDS);
   private readonly savingState = signal(false);
@@ -59,13 +59,13 @@ export class CatalogService {
       .get<ApiEnvelope<FeaturedGameModesResponse>>(this.buildUrl('common/featured-game-modes/'))
       .subscribe({
         next: (response) => this.featuredIds.set(response.data.game_mode_ids),
-        // Backend indisponível — mantém o padrão local em vez de esvaziar a Home.
+        // Backend indisponível: mantém o padrão local em vez de esvaziar a Home.
         error: () => undefined,
       });
   }
 
   /** Substitui a lista de destaques inteira, já na ordem final, e salva no
-   * backend — chamado só quando o admin clica em "Salvar" em Configurações. */
+   * backend. Chamado só quando o admin clica em "Salvar" em Configurações. */
   saveFeaturedIds(ids: readonly string[]): void {
     this.savingState.set(true);
     this.errorState.set(null);

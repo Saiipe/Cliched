@@ -7,12 +7,12 @@ import { AdsService as MonetizationAdsService } from '../../features/monetizatio
 
 /**
  * Fachada global de anúncios. Todo o resto da aplicação (Home, Ranking,
- * Profile, features de jogo etc.) deve depender só disto — nunca importar
+ * Profile, features de jogo etc.) deve depender só disto e nunca importar
  * `features/monetization/ads` diretamente. Assim, qual provedor está por
  * trás e como o interstitial é montado pode mudar sem afetar quem consome.
  *
  * O Angular CDK Overlay só é importado dinamicamente dentro de
- * `showInterstitial()` — páginas que só usam banner (a maioria) não devem
+ * `showInterstitial()`. Páginas que só usam banner (a maioria) não devem
  * pagar o custo de bundle do Overlay/Portal no carregamento inicial.
  */
 @Injectable({ providedIn: 'root' })

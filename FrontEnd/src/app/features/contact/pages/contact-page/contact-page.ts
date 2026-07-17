@@ -43,7 +43,7 @@ import { Icon } from '../../../../shared/ui/icon/icon';
       </div>
 
       <p class="mt-8 text-xs text-muted">
-        Formulário de contato e e-mail dedicado ainda estão em construção — por enquanto, os
+        Formulário de contato e e-mail dedicado ainda estão em construção. Por enquanto, os
         canais de comunidade são a forma mais rápida de falar com a gente.
       </p>
     </section>

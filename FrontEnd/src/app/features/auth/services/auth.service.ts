@@ -40,7 +40,7 @@ export class AuthService {
   readonly notice = this.noticeState.asReadonly();
 
   constructor() {
-    // Sessão persistida de uma visita anterior — restaura o perfil.
+    // Sessão persistida de uma visita anterior: restaura o perfil.
     if (isPlatformBrowser(this.platformId) && this.storage.access()) {
       this.loadMe();
     }
@@ -50,7 +50,7 @@ export class AuthService {
     return this.storage.access() !== null;
   }
 
-  /** Validador ajax do campo de usuário no cadastro — o backend não diz
+  /** Validador ajax do campo de usuário no cadastro: o backend não diz
    * *por que* está indisponível (formato ou já em uso), só se está. */
   checkUsernameAvailable(username: string): Observable<boolean> {
     return this.http
@@ -121,7 +121,7 @@ export class AuthService {
     this.fetchMe().subscribe();
   }
 
-  /** Versão observable de `loadMe()` — usada pelo `adminGuard`, que precisa
+  /** Versão observable de `loadMe()`, usada pelo `adminGuard`, que precisa
    * esperar a resposta antes de decidir se deixa entrar (o cache do signal
    * `user()` pode ainda não existir num hard refresh). */
   fetchMe(): Observable<MePayload | null> {
@@ -148,7 +148,7 @@ export class AuthService {
   private onAuthenticated(payload: AuthPayload): void {
     this.storage.store(payload.tokens);
     this.userState.set(payload.user);
-    // O progresso anônimo foi adotado pela conta — o token não vale mais.
+    // O progresso anônimo foi adotado pela conta, então o token não vale mais.
     this.anonSession.storeToken(null);
     this.loadMe();
     // É um modal: fecha e deixa o jogador onde estava, em vez de navegar.

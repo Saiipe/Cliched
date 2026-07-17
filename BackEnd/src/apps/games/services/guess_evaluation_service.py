@@ -1,4 +1,4 @@
-"""Pure guess-vs-answer comparison. No I/O — the target of unit tests.
+"""Pure guess-vs-answer comparison. No I/O, which makes it the target of unit tests.
 
 Each field yields {"result": "correct" | "partial" | "wrong", ...extras}.
 Numeric fields add "direction": "up" when the answer is greater than the

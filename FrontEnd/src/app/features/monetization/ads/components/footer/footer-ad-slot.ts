@@ -5,7 +5,7 @@ import { AdFormat } from '../../enums/ad-format.enum';
 import type { AdPlacement } from '../../enums/ad-placement.enum';
 
 /**
- * Banner discreto, pensado pro Perfil — usa o formato nativo (cartão),
+ * Banner discreto, pensado pro Perfil: usa o formato nativo (cartão),
  * que ocupa menos espaço e não compete visualmente com o conteúdo.
  */
 @Component({

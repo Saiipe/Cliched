@@ -10,7 +10,7 @@ interface Sparkle {
 }
 
 /** Posições fixas (não aleatórias) para o SSR e o cliente renderizarem o
- * mesmo campo — aleatoriedade em runtime quebraria a hidratação. */
+ * mesmo campo: aleatoriedade em runtime quebraria a hidratação. */
 const SPARKLES: readonly Sparkle[] = [
   { top: '4%', left: '22%', size: '1.25rem', tone: 'amber', delay: '0s' },
   { top: '8%', left: '72%', size: '0.9rem', tone: 'white', delay: '1.2s' },
@@ -28,7 +28,7 @@ const SPARKLES: readonly Sparkle[] = [
 ];
 
 /** Estrelinhas (brancas e âmbar) pulsando, espalhadas por todo o container.
- * Decoração pura — o pai precisa ser `relative`. */
+ * Decoração pura: o pai precisa ser `relative`. */
 @Component({
   selector: 'app-sparkle-field',
   changeDetection: ChangeDetectionStrategy.OnPush,

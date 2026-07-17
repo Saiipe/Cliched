@@ -6,7 +6,7 @@ from shared.mixins.timestamped import TimestampedModel
 class Movie(TimestampedModel):
     """Persisted snapshot of a TMDB movie.
 
-    Guess evaluation compares Movie vs Movie — never hits TMDB at request
+    Guess evaluation compares Movie vs Movie; it never hits TMDB at request
     time. `poster_path` is the raw TMDB path and must never be exposed by
     the API (it would leak the daily answer).
     """

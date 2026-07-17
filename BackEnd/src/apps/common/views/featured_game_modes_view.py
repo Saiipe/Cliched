@@ -13,7 +13,7 @@ class FeaturedGameModesView(APIView):
     """Which game modes are highlighted on the home page, in order.
 
     GET is public (the home page reads it directly); POST replaces the
-    whole ordered list — used by the admin "Jogos" picker, admin-only."""
+    whole ordered list; used by the admin "Jogos" picker, admin-only."""
 
     def get_permissions(self):
         if self.request.method == "POST":

@@ -18,10 +18,10 @@ const NAV_LINKS: readonly AdminNavLink[] = [
 ];
 
 /**
- * Navbar exclusiva do painel administrativo — de propósito não reaproveita o
+ * Navbar exclusiva do painel administrativo: de propósito não reaproveita o
  * `Header` público (branding, links e CTA são completamente diferentes).
- * Links sem rota ainda (`path: null`) aparecem desabilitados, não escondidos —
- * comunica a estrutura prevista sem simular navegação que não existe.
+ * Links sem rota ainda (`path: null`) aparecem desabilitados, não escondidos,
+ * comunicando a estrutura prevista sem simular navegação que não existe.
  */
 @Component({
   selector: 'app-admin-header',

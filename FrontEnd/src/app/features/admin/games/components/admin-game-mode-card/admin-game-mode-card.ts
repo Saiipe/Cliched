@@ -88,7 +88,7 @@ export class AdminGameModeCard {
   );
 
   // Se o modo já tem uma tela de administração de verdade, o card inteiro
-  // vira um link direto pra ela — só cai no "expandir e listar opções"
+  // vira um link direto pra ela. Só cai no "expandir e listar opções"
   // (com a mensagem de placeholder) quando ainda não existe nenhuma.
   protected readonly primaryRoute = computed(
     () => ADMIN_GAME_OPTIONS[this.gameMode().id]?.[0]?.route ?? null,

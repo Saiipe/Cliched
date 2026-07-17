@@ -19,7 +19,7 @@ import { AuthService } from '../../services/auth.service';
 const USERNAME_CHECK_DEBOUNCE_MS = 400;
 
 /** Validador ajax: espera o usuário parar de digitar e pergunta pro
- * backend se o nome de usuário está disponível — de propósito não
+ * backend se o nome de usuário está disponível. De propósito não
  * verifica o formato no cliente nem explica a regra na tela (só o
  * backend sabe, e só devolve disponível/indisponível). */
 function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn {

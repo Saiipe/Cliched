@@ -26,7 +26,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    """Campos são a lista exata definida pelo usuário — não adicionar
+    """Campos são a lista exata definida pelo usuário, não adicionar
     nenhum campo novo sem pedido explícito. `is_superuser` é a flag de
     admin (acesso ao painel `/admin`) e nunca pode ser setável via
     payload de cliente, só direto no banco."""

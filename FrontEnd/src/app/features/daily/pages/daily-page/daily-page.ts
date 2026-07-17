@@ -99,7 +99,7 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
                   <div class="rounded-2xl border border-border bg-bg p-3">
                     <p class="text-xs uppercase tracking-[0.18em] text-muted">Score</p>
                     <p class="mt-2 text-2xl font-semibold text-foreground">
-                      {{ currentSession.score ?? '—' }}
+                      {{ currentSession.score ?? '-' }}
                     </p>
                   </div>
                 </div>
@@ -117,7 +117,7 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
                     <p class="text-xs uppercase tracking-[0.18em] text-muted">Revelação</p>
                     <h2 class="mt-2 text-xl font-semibold text-foreground">{{ currentSession.reveal.title }}</h2>
                     <p class="mt-1 text-sm text-muted">
-                      {{ currentSession.reveal.original_title }} · {{ currentSession.reveal.release_year ?? '—' }}
+                      {{ currentSession.reveal.original_title }} · {{ currentSession.reveal.release_year ?? '-' }}
                     </p>
                   </div>
                 }

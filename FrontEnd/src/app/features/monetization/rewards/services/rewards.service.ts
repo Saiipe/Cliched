@@ -12,7 +12,7 @@ export interface GrantedReward {
  * desbloqueio de conteúdo), tipicamente após um `AdsService.requestRewardedAd()`
  * bem-sucedido. Moedas são resolvidas aqui mesmo (via CoinsService, no mesmo
  * domínio de monetização); os demais tipos só são anunciados via
- * `getLastGrantedReward()` — quem sabe o que fazer com "Hint"/"ExtraPlay"/
+ * `getLastGrantedReward()`. Quem sabe o que fazer com "Hint"/"ExtraPlay"/
  * "UnlockContent" é a feature de jogo que pediu a recompensa, não este service.
  */
 @Injectable({ providedIn: 'root' })

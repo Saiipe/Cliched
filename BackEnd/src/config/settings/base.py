@@ -41,7 +41,7 @@ DEBUG = False
 ALLOWED_HOSTS: list[str] = env_list("DJANGO_ALLOWED_HOSTS")
 
 # Application definition
-# No django.contrib.admin on purpose — the project ships its own admin panel
+# No django.contrib.admin on purpose: the project ships its own admin panel
 # in the Angular frontend, so the Django admin site is never installed/mounted.
 DJANGO_APPS = [
     "django.contrib.auth",
@@ -134,7 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "pt-br"
 # "Hoje"/meia-noite do desafio diário (timezone.localdate() em
 # DailyChallengeService) precisa bater com a meia-noite real do público
-# (pt-br) — UTC deixava o desafio virar 3h antes do contador do frontend
+# (pt-br); UTC deixava o desafio virar 3h antes do contador do frontend
 # chegar em 00:00:00 local.
 TIME_ZONE = env("DJANGO_TIME_ZONE", "America/Sao_Paulo")
 USE_I18N = True
@@ -169,7 +169,7 @@ REST_FRAMEWORK = {
 # drf-spectacular (OpenAPI / Swagger)
 SPECTACULAR_SETTINGS = {
     "TITLE": "Cliched API",
-    "DESCRIPTION": "API do Cliched — plataforma de jogos sobre cinema.",
+    "DESCRIPTION": "API do Cliched: plataforma de jogos sobre cinema.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
@@ -187,7 +187,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS")
 
 # The anonymous daily-challenge session (apps.games) is identified via a
-# custom X-Anon-Token header — corsheaders' default allow-list doesn't
+# custom X-Anon-Token header, and corsheaders' default allow-list doesn't
 # include custom headers, so the browser's preflight rejects it and every
 # guess after the token is issued fails client-side with "Failed to fetch".
 CORS_ALLOW_HEADERS = [*default_headers, "x-anon-token"]

@@ -4,7 +4,7 @@ import { Badge } from '../../badge/badge';
 
 /**
  * Mesmo formato visual de um card de conteúdo (ex: `GameModeCard`), pra se
- * misturar naturalmente numa grade/lista — pensado pro catálogo, ao estilo
+ * misturar naturalmente numa grade/lista. Pensado pro catálogo, ao estilo
  * "post patrocinado" do Reddit.
  */
 @Component({

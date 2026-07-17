@@ -8,7 +8,7 @@ class TMDBService:
 
     Uses the v4 read-access Bearer token (not the v3 api_key query param).
     Retry/backoff and the requests/second ceiling live in
-    shared.services.http_client.RetryableAPIClient — this class only knows
+    shared.services.http_client.RetryableAPIClient; this class only knows
     about TMDB's endpoints and response shapes.
     """
 

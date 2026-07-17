@@ -81,7 +81,7 @@ class DailyChallengeService:
 
         challenge.movie = movie
         challenge.status = DailyChallenge.Status.PENDING
-        # A new movie means the old art choice may not exist anymore — pick a
+        # A new movie means the old art choice may not exist anymore, so pick a
         # fresh textless default (the admin can still override it).
         challenge.image_source = DailyChallenge.ImageSource.POSTER
         challenge.image_path = self._pick_default_image_path(movie)
@@ -94,7 +94,7 @@ class DailyChallengeService:
         self, challenge: DailyChallenge, image_source: str, image_path: str = ""
     ) -> DailyChallenge:
         """Admin-only: pick which TMDB art the pixelated game image is
-        generated from — either the movie's default poster/backdrop
+        generated from, either the movie's default poster/backdrop
         (`image_path` blank) or a specific one from its gallery. Same cutoff
         rule as swap_movie."""
         if challenge.date <= timezone.localdate():
@@ -102,7 +102,7 @@ class DailyChallengeService:
                 "O desafio deste dia já está em andamento e não pode mais ser alterado."
             )
         if image_source not in DailyChallenge.ImageSource.values:
-            raise BusinessRuleViolation("Imagem inválida — use 'poster' ou 'backdrop'.")
+            raise BusinessRuleViolation("Imagem inválida: use 'poster' ou 'backdrop'.")
 
         if image_source == DailyChallenge.ImageSource.BACKDROP and not image_path:
             movie = self.ensure_backdrop(challenge.movie)
@@ -126,7 +126,7 @@ class DailyChallengeService:
 
     def get_image_gallery(self, challenge: DailyChallenge) -> dict:
         """Full poster gallery for the challenge's movie, straight from TMDB
-        (not persisted — just a proxy like movies/search). `iso_639_1` lets
+        (not persisted, just a proxy like movies/search). `iso_639_1` lets
         the admin filter by language (`None` = textless art)."""
         payload = self._tmdb.get_movie_images(challenge.movie.tmdb_id)
         return {
@@ -141,7 +141,7 @@ class DailyChallengeService:
         }
 
     def _pick_default_image_path(self, movie) -> str:
-        """Prefers a textless poster as the default game art — a poster with
+        """Prefers a textless poster as the default game art: a poster with
         the title baked into the image would make guessing trivial. Falls
         back to blank (movie.poster_path, TMDB's own default) if the movie
         has no textless option in its gallery."""
@@ -157,7 +157,7 @@ class DailyChallengeService:
 
     def advance_to_next_challenge(self) -> DailyChallenge:
         """TEST-ONLY convenience: instantly makes tomorrow's (already-previewed)
-        challenge become today's, without waiting for real midnight — for
+        challenge become today's, without waiting for real midnight, for
         trying out the "next challenge" flow in the frontend. Deletes today's
         challenge and every session/attempt against it (cascade); this is a
         throwaway dev tool, not meant for production use."""

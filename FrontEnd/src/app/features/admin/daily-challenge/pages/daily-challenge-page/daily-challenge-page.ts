@@ -91,7 +91,7 @@ const LANGUAGE_FILTERS: readonly { readonly value: LanguageFilter; readonly labe
               <div>
                 <p class="text-sm font-medium text-warning">Ferramenta de teste</p>
                 <p class="text-xs text-muted">
-                  Pula a espera até meia-noite — o desafio de amanhã vira o de hoje agora.
+                  Pula a espera até meia-noite: o desafio de amanhã vira o de hoje agora.
                 </p>
               </div>
               <button
@@ -123,7 +123,7 @@ const LANGUAGE_FILTERS: readonly { readonly value: LanguageFilter; readonly labe
 
             <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
               <h4 class="text-xs font-semibold uppercase tracking-[0.16em] text-muted">
-                Galeria — trocar pôster
+                Galeria: trocar pôster
               </h4>
 
               <select
@@ -172,7 +172,7 @@ const LANGUAGE_FILTERS: readonly { readonly value: LanguageFilter; readonly labe
 
             @if (!current.swappable) {
               <p class="mt-4 rounded-xl border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning">
-                O dia deste desafio já começou — filme e imagem não podem mais ser alterados.
+                O dia deste desafio já começou, então filme e imagem não podem mais ser alterados.
               </p>
             }
           </article>
@@ -275,21 +275,21 @@ const LANGUAGE_FILTERS: readonly { readonly value: LanguageFilter; readonly labe
               <dl class="mt-4 space-y-2 text-sm">
                 <div class="flex justify-between gap-3">
                   <dt class="text-muted">Título original</dt>
-                  <dd class="text-right text-foreground">{{ current.movie.original_title || '—' }}</dd>
+                  <dd class="text-right text-foreground">{{ current.movie.original_title || '-' }}</dd>
                 </div>
                 <div class="flex justify-between gap-3">
                   <dt class="text-muted">País</dt>
-                  <dd class="text-foreground">{{ current.movie.origin_country || '—' }}</dd>
+                  <dd class="text-foreground">{{ current.movie.origin_country || '-' }}</dd>
                 </div>
                 <div class="flex justify-between gap-3">
                   <dt class="text-muted">Duração</dt>
                   <dd class="text-foreground">
-                    {{ current.movie.runtime ? current.movie.runtime + ' min' : '—' }}
+                    {{ current.movie.runtime ? current.movie.runtime + ' min' : '-' }}
                   </dd>
                 </div>
                 <div class="flex justify-between gap-3">
                   <dt class="shrink-0 text-muted">Elenco</dt>
-                  <dd class="text-right text-foreground">{{ current.movie.top_cast.join(', ') || '—' }}</dd>
+                  <dd class="text-right text-foreground">{{ current.movie.top_cast.join(', ') || '-' }}</dd>
                 </div>
               </dl>
             </div>
@@ -431,7 +431,7 @@ export class AdminDailyChallengePage implements OnInit {
   }
 
   protected genreNames(genres: readonly { id: number; name: string }[]): string {
-    return genres.map((genre) => genre.name).join(', ') || '—';
+    return genres.map((genre) => genre.name).join(', ') || '-';
   }
 
   protected posterThumb(path: string): string {

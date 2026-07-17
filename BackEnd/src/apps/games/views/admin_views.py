@@ -14,7 +14,7 @@ from shared.responses.api_response import error_response, success_response
 
 
 def _challenge_payload(challenge: DailyChallenge) -> dict:
-    """Full movie reveal — admin-only responses, never player-facing."""
+    """Full movie reveal: admin-only responses, never player-facing."""
     movie = challenge.movie
     return {
         "challenge_id": challenge.pk,
@@ -40,7 +40,7 @@ def _challenge_payload(challenge: DailyChallenge) -> dict:
 
 
 class CurrentChallengeAdminView(APIView):
-    """Reveal today's (live) movie for the admin — read-only, since a
+    """Reveal today's (live) movie for the admin: read-only, since a
     challenge that already started can never be swapped/edited."""
 
     permission_classes = [IsAdmin]
@@ -48,7 +48,7 @@ class CurrentChallengeAdminView(APIView):
     @extend_schema(
         summary="[Admin] Ver o filme de hoje",
         description="Revela o filme do desafio que está ao vivo agora (cria se "
-        "ainda não existir). Somente leitura — nunca pode ser trocado.",
+        "ainda não existir). Somente leitura, nunca pode ser trocado.",
         responses={200: OpenApiTypes.OBJECT},
         tags=["games-admin"],
     )
@@ -84,7 +84,7 @@ class NextChallengeAdminView(APIView):
 
 
 class SwapNextChallengeAdminView(APIView):
-    """Swap tomorrow's movie — rejected once the challenge's day has started.
+    """Swap tomorrow's movie: rejected once the challenge's day has started.
 
     Body: {"tmdb_id": <int>} for a specific movie, or empty for a new
     random pick."""
@@ -93,7 +93,7 @@ class SwapNextChallengeAdminView(APIView):
 
     @extend_schema(
         summary="[Admin] Trocar o filme de amanhã",
-        description="Troca o filme do desafio de amanhã — por um específico "
+        description="Troca o filme do desafio de amanhã, por um específico "
         "(`tmdb_id`) ou por um novo sorteio (corpo vazio). Recusado (422) quando o "
         "dia do desafio já começou.",
         request=inline_serializer(
@@ -125,7 +125,7 @@ class SwapNextChallengeAdminView(APIView):
 
 class NextChallengeImageAdminView(APIView):
     """Choose which TMDB art tomorrow's pixelated game image is generated
-    from — the movie's default poster/backdrop, or a specific one from its
+    from: the movie's default poster/backdrop, or a specific one from its
     gallery (see NextChallengeImageGalleryAdminView).
 
     Body: {"image_source": "poster" | "backdrop", "image_path": <optional>}."""
@@ -134,8 +134,8 @@ class NextChallengeImageAdminView(APIView):
 
     @extend_schema(
         summary="[Admin] Escolher a imagem do desafio de amanhã",
-        description="Define a imagem pixelizada do jogo — pôster/banner padrão do "
-        "filme, ou uma arte específica da galeria (`image_path`) — e regenera os "
+        description="Define a imagem pixelizada do jogo: pôster/banner padrão do "
+        "filme, ou uma arte específica da galeria (`image_path`), e regenera os "
         "níveis. Recusado (422) quando o dia do desafio já começou.",
         request=inline_serializer(
             name="ImageSourceRequest",
@@ -172,9 +172,9 @@ class NextChallengeImageAdminView(APIView):
 
 
 class NextChallengeImageGalleryAdminView(APIView):
-    """All TMDB posters for tomorrow's movie — movie-details only exposes a
+    """All TMDB posters for tomorrow's movie: movie-details only exposes a
     single default one; this is the full pick-from gallery. Backdrops are
-    intentionally left out — this game only ever shows posters."""
+    intentionally left out, since this game only ever shows posters."""
 
     permission_classes = [IsAdmin]
 

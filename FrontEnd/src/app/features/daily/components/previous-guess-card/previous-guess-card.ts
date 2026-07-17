@@ -94,19 +94,19 @@ export class PreviousGuessCard {
     }
 
     return [
-      { label: `Ano: ${clues.release_year.value ?? '—'}`, result: clues.release_year.result },
+      { label: `Ano: ${clues.release_year.value ?? '-'}`, result: clues.release_year.result },
       {
-        label: `Gêneros: ${clues.genres.value.map((genre) => genre.name).join(', ') || '—'}`,
+        label: `Gêneros: ${clues.genres.value.map((genre) => genre.name).join(', ') || '-'}`,
         result: clues.genres.result,
       },
-      { label: `País: ${clues.country.value ?? '—'}`, result: clues.country.result },
-      { label: `Diretor: ${clues.director.value ?? '—'}`, result: clues.director.result },
+      { label: `País: ${clues.country.value ?? '-'}`, result: clues.country.result },
+      { label: `Diretor: ${clues.director.value ?? '-'}`, result: clues.director.result },
       {
-        label: `Elenco: ${clues.cast.value.slice(0, 3).join(', ') || '—'}`,
+        label: `Elenco: ${clues.cast.value.slice(0, 3).join(', ') || '-'}`,
         result: clues.cast.result,
       },
       {
-        label: `Duração: ${clues.runtime.value ? clues.runtime.value + ' min' : '—'}`,
+        label: `Duração: ${clues.runtime.value ? clues.runtime.value + ' min' : '-'}`,
         result: clues.runtime.result,
       },
     ];

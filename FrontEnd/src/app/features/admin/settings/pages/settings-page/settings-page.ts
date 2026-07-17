@@ -177,7 +177,7 @@ export class AdminSettingsPage {
     }
 
     // Reatribui pra disparar os signals (moveItemInArray/transferArrayItem
-    // mutam o array in-place). Só atualiza o estado local — persistir fica
+    // mutam o array in-place). Só atualiza o estado local; persistir fica
     // pro clique em "Salvar".
     this.featured.set([...this.featured()]);
     this.available.set([...this.available()]);

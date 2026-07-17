@@ -5,7 +5,7 @@ from shared.mixins.timestamped import TimestampedModel
 
 
 class LoginEvent(TimestampedModel):
-    """Um registro por login bem-sucedido — histórico de acesso exibido
+    """Um registro por login bem-sucedido: histórico de acesso exibido
     pro admin na tela de Usuários. `created_at` (herdado) é o timestamp do
     login."""
 

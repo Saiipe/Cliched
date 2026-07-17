@@ -30,7 +30,7 @@ export class DailyGameService {
   readonly loading = this.loadingState.asReadonly();
   readonly submitting = this.submittingState.asReadonly();
   readonly error = this.errorState.asReadonly();
-  /** Object URL do pôster — buscado via HttpClient (não <img src> direto)
+  /** Object URL do pôster, buscado via HttpClient (não <img src> direto)
    * porque a imagem exige credenciais: JWT no header quando logado, ou o
    * X-Anon-Token da sessão anônima. Uma tag <img> não envia nenhum dos dois. */
   readonly posterObjectUrl = this.posterState.asReadonly();
@@ -79,7 +79,7 @@ export class DailyGameService {
           this.sessionState.set(response.data);
           this.guessState.set(response.data);
           // anon_token só vem preenchido na resposta que CRIA a sessão (1º palpite);
-          // nas seguintes o campo é omitido — não pode ser tratado como "limpar token".
+          // nas seguintes o campo é omitido, então não pode ser tratado como "limpar token".
           if (response.data.anon_token) {
             this.anonSession.storeToken(response.data.anon_token);
           }

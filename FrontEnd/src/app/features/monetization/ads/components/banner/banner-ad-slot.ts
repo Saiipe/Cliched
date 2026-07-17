@@ -5,7 +5,7 @@ import { AdFormat } from '../../enums/ad-format.enum';
 import type { AdPlacement } from '../../enums/ad-placement.enum';
 
 /**
- * O que as páginas realmente usam para exibir um banner horizontal — sabe
+ * O que as páginas realmente usam para exibir um banner horizontal. Sabe
  * qual `placement` está pedindo e busca o `AdUnit` correspondente; a
  * apresentação em si é toda do `BannerHorizontal` (shared/ui, sem lógica).
  */

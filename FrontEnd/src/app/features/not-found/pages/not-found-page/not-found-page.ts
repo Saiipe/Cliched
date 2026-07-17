@@ -52,7 +52,7 @@ import { Icon } from '../../../../shared/ui/icon/icon';
       </h1>
 
       <p class="max-w-md text-balance text-muted">
-        A página que você procura foi cortada da edição final — ou o endereço está errado.
+        A página que você procura foi cortada da edição final, ou o endereço está errado.
         Que tal voltar para o início e escolher um desafio?
       </p>
 

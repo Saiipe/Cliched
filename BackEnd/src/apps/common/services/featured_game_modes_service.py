@@ -5,7 +5,7 @@ from apps.common.models import FeaturedGameMode
 
 class FeaturedGameModesService:
     """Reads/writes the ordered list of game modes highlighted on the home
-    page. The whole list is replaced on every write — there's no per-item
+    page. The whole list is replaced on every write: there's no per-item
     CRUD need here, the admin picker always sends the full ordered set."""
 
     def list_ids(self) -> list[str]:

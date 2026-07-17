@@ -16,7 +16,7 @@ class TMDBSearchView(APIView):
 
     @extend_schema(
         summary="Buscar filmes (TMDB)",
-        description="Proxy da busca do TMDB — usado pelo autocomplete de palpites.",
+        description="Proxy da busca do TMDB, usado pelo autocomplete de palpites.",
         parameters=[
             OpenApiParameter(name="query", type=OpenApiTypes.STR, required=True,
                              description="Texto de busca (nome do filme)."),

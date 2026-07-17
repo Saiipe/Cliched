@@ -8,7 +8,7 @@ import { TokenStorageService } from './core/services/token-storage.service';
 
 /** Painel admin exige sessão + `is_superuser`. Sem token, abre o modal de
  * login; logado mas sem a flag, só redireciona (não é problema de sessão,
- * é falta de permissão — abrir o modal de novo não ajudaria). Num hard
+ * e sim falta de permissão, então abrir o modal de novo não ajudaria). Num hard
  * refresh o perfil ainda pode não estar em cache, então espera a resposta
  * de `users/me/` em vez de confiar só no signal local. */
 const adminGuard = () => {
@@ -35,7 +35,7 @@ export const routes: Routes = [
   {
     // Precisa vir antes do shell público: 'path: ""' abaixo casa com
     // qualquer URL (consome zero segmentos) e tem um '**' interno para o
-    // 404 público — se 'admin' viesse depois, /admin seria engolido por
+    // 404 público. Se 'admin' viesse depois, /admin seria engolido por
     // esse wildcard antes mesmo de chegar aqui.
     path: 'admin',
     canActivate: [adminGuard],
@@ -156,7 +156,7 @@ export const routes: Routes = [
   },
   {
     // Nunca deveria ser alcançado na prática (o '**' do shell público
-    // acima já cobre qualquer URL que não seja 'admin'), mas fica como
+    // acima já cobre qualquer URL que não seja 'admin'). Fica só como
     // rede de segurança.
     path: '**',
     loadComponent: () =>

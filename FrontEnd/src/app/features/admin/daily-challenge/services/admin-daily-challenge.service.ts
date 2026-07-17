@@ -90,7 +90,7 @@ export class AdminDailyChallengeService {
         next: (response) => {
           this.noticeState.set(response.message || 'Desafio adiantado.');
           this.scheduleToastDismissal();
-          // O que era "amanhã" virou "hoje" — recarrega para mostrar o novo
+          // O que era "amanhã" virou "hoje", então recarrega para mostrar o novo
           // "amanhã" (e sua galeria), não o desafio recém-adiantado.
           this.loadNextChallenge();
         },

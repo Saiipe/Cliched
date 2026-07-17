@@ -27,7 +27,7 @@ def _tokens_for(user) -> dict:
 
 def _adopt_anon_progress(request, user) -> None:
     """Se o jogador vinha jogando anônimo (X-Anon-Token), o progresso passa
-    a pertencer à conta — é o "salvar progresso ao logar"."""
+    a pertencer à conta: é o "salvar progresso ao logar"."""
     SessionAdoptionService.adopt(user, request.headers.get("X-Anon-Token"))
 
 
@@ -40,7 +40,7 @@ def _client_ip(request) -> str | None:
 
 def _record_login(request, user) -> None:
     """Histórico de acesso exibido pro admin na tela de Usuários. Também
-    atualiza `last_login` — não usamos `django.contrib.auth.login()` (é
+    atualiza `last_login`, pois não usamos `django.contrib.auth.login()` (é
     JWT, sem sessão), então esse update não acontece sozinho."""
     user.last_login = timezone.now()
     user.save(update_fields=["last_login"])
@@ -50,7 +50,7 @@ def _record_login(request, user) -> None:
 class UsernameAvailabilityView(APIView):
     """Validador ajax do campo de usuário no cadastro.
 
-    De propósito só devolve um booleano — nunca diz *por que* está
+    De propósito só devolve um booleano: nunca diz *por que* está
     indisponível (formato inválido vs. já existe): expor a regra de
     caracteres aceitos facilitaria testar o allowlist por tentativa e
     erro. `RegisterSerializer` continua sendo a validação de verdade."""

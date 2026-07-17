@@ -26,13 +26,13 @@ class DailyChallenge(TimestampedModel):
     status = models.CharField(
         max_length=10, choices=Status.choices, default=Status.PENDING
     )
-    # Which TMDB art the pixelated game image is generated from — chosen by
+    # Which TMDB art the pixelated game image is generated from, chosen by
     # the admin while the challenge is still in the future.
     image_source = models.CharField(
         max_length=10, choices=ImageSource.choices, default=ImageSource.POSTER
     )
     # Specific TMDB image path within that source's gallery (movie.poster_path
-    # is only the single "default" one — TMDB has many per movie). Blank
+    # is only the single "default" one; TMDB has many per movie). Blank
     # means "use the movie's default path for image_source".
     image_path = models.CharField(max_length=255, blank=True, default="")
 

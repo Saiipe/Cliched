@@ -45,7 +45,7 @@ class DailyChallengeView(APIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        summary="Desafio diário — estado atual",
+        summary="Desafio diário: estado atual",
         description="Retorna o desafio de hoje (criando-o se ainda não existir). "
         "Nunca expõe o filme-resposta enquanto a partida está em andamento.",
         parameters=[ANON_TOKEN_HEADER],
@@ -68,7 +68,7 @@ class DailyGuessView(APIView):
     @extend_schema(
         summary="Enviar palpite",
         description="Avalia o palpite contra o filme do dia e retorna as pistas por "
-        "campo. No primeiro palpite anônimo, devolve `anon_token` — envie-o nos "
+        "campo. No primeiro palpite anônimo, devolve `anon_token`: envie-o nos "
         "próximos requests via header X-Anon-Token.",
         parameters=[ANON_TOKEN_HEADER],
         request=inline_serializer(

@@ -5,7 +5,7 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Perfil exposto pela API. `is_superuser` é somente leitura — a flag
+    """Perfil exposto pela API. `is_superuser` é somente leitura: a flag
     de admin só muda direto no banco, nunca por request."""
 
     class Meta:

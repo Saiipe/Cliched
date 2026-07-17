@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 
 /**
- * Saldo de moedas do usuário. Hoje só em memória (começa em 0) — quando
+ * Saldo de moedas do usuário. Hoje só em memória (começa em 0). Quando
  * houver backend, a leitura/persistência do saldo passa a vir de lá, sem
  * mudar a API pública deste service.
  */

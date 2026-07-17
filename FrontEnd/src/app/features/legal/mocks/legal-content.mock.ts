@@ -9,7 +9,7 @@ export const LEGAL_CONTENT: Readonly<Record<LegalPageType, LegalContent>> = {
     sections: [
       {
         heading: 'Sessão anônima',
-        body: 'Para jogar o desafio diário sem precisar criar conta, geramos um token de sessão anônimo, guardado no armazenamento local (localStorage) do seu navegador. Ele identifica só a sua sequência de tentativas naquele aparelho — não contém nome, e-mail ou qualquer dado pessoal.',
+        body: 'Para jogar o desafio diário sem precisar criar conta, geramos um token de sessão anônimo, guardado no armazenamento local (localStorage) do seu navegador. Ele identifica só a sua sequência de tentativas naquele aparelho e não contém nome, e-mail ou qualquer dado pessoal.',
       },
       {
         heading: 'Conta e login',
@@ -60,7 +60,7 @@ export const LEGAL_CONTENT: Readonly<Record<LegalPageType, LegalContent>> = {
     title: 'Política de Cookies',
     updatedAt: 'julho de 2026',
     intro:
-      'O Cliched usa hoje armazenamento local do navegador — não cookies de rastreamento publicitário.',
+      'O Cliched usa hoje armazenamento local do navegador, não cookies de rastreamento publicitário.',
     sections: [
       {
         heading: 'Armazenamento local (localStorage)',
@@ -72,7 +72,7 @@ export const LEGAL_CONTENT: Readonly<Record<LegalPageType, LegalContent>> = {
       },
       {
         heading: 'Como limpar esses dados',
-        body: 'Limpar os dados de navegação/localStorage do seu navegador para este site apaga sua sessão anônima local — sua sequência no desafio diário desse aparelho será reiniciada.',
+        body: 'Limpar os dados de navegação/localStorage do seu navegador para este site apaga sua sessão anônima local: sua sequência no desafio diário desse aparelho será reiniciada.',
       },
     ],
   },

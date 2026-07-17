@@ -154,7 +154,7 @@ class AdminNextChallengeTests(DailyFlowTestsBase):
         self.assertEqual(data["image_path"], "/backdrop-alt-2.jpg")
 
     def test_swap_picks_a_fresh_textless_default(self):
-        # A new movie's old art choice may not exist anymore — swap must
+        # A new movie's old art choice may not exist anymore, so swap must
         # pick a new textless default rather than keep a stale image_path
         # or fall back to the (often title-text-covered) TMDB default.
         self.get_next()
@@ -174,7 +174,7 @@ class AdminNextChallengeTests(DailyFlowTestsBase):
     def test_advance_makes_tomorrow_todays_challenge(self):
         # Order matters for the mock: discover_movies only ever offers
         # ANSWER_TMDB_ID, so tomorrow must claim a *different* movie (via
-        # explicit swap) before today's challenge is created — otherwise
+        # explicit swap) before today's challenge is created; otherwise
         # both random picks compete for the same single candidate.
         self.get_next()  # creates tomorrow's challenge
         self.swap(tmdb_id=OTHER_TMDB_ID)  # give tomorrow a distinct movie

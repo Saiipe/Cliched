@@ -51,33 +51,33 @@ export class GuessCluesGrid {
     return [
       {
         label: 'Ano',
-        text: clues.release_year.value?.toString() ?? '—',
+        text: clues.release_year.value?.toString() ?? '-',
         result: clues.release_year.result,
         direction: clues.release_year.direction,
       },
       {
         label: 'Gêneros',
-        text: clues.genres.value.map((genre) => genre.name).join(', ') || '—',
+        text: clues.genres.value.map((genre) => genre.name).join(', ') || '-',
         result: clues.genres.result,
       },
       {
         label: 'País',
-        text: clues.country.value ?? '—',
+        text: clues.country.value ?? '-',
         result: clues.country.result,
       },
       {
         label: 'Diretor',
-        text: clues.director.value ?? '—',
+        text: clues.director.value ?? '-',
         result: clues.director.result,
       },
       {
         label: 'Elenco',
-        text: clues.cast.value.slice(0, 3).join(', ') || '—',
+        text: clues.cast.value.slice(0, 3).join(', ') || '-',
         result: clues.cast.result,
       },
       {
         label: 'Duração',
-        text: clues.runtime.value ? `${clues.runtime.value} min` : '—',
+        text: clues.runtime.value ? `${clues.runtime.value} min` : '-',
         result: clues.runtime.result,
         direction: clues.runtime.direction,
       },

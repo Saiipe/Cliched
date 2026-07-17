@@ -23,7 +23,7 @@ function withAuth(request: HttpRequest<unknown>, access: string): HttpRequest<un
  * tenta renovar com o refresh token uma única vez antes de desistir. */
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const storage = inject(TokenStorageService);
-  // HttpBackend pula os interceptors — evita loop 401→refresh→401→refresh...
+  // HttpBackend pula os interceptors, evitando loop 401→refresh→401→refresh...
   const rawHttp = new HttpClient(inject(HttpBackend));
 
   const isApiCall = request.url.startsWith(environment.apiBaseUrl);
@@ -49,7 +49,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
             return tokens.access;
           }),
           catchError(() => {
-            storage.clear(); // refresh também expirou — sessão acabou de fato
+            storage.clear(); // refresh também expirou: a sessão acabou de fato
             return throwError(() => error);
           }),
           switchMap((newAccess) => next(withAuth(request, newAccess))),

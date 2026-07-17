@@ -22,7 +22,7 @@ import { CatalogService } from '../../../catalog/services/catalog.service';
           <app-game-mode-card [gameMode]="gameMode" />
         } @empty {
           <p class="col-span-full text-sm text-muted">
-            Nenhum modo em destaque configurado — escolha em Admin › Jogos.
+            Nenhum modo em destaque configurado, escolha em Admin › Jogos.
           </p>
         }
       </div>

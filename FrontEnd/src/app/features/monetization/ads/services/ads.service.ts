@@ -8,7 +8,7 @@ import type { RewardedAdResult } from '../models/rewarded-ad-result.model';
 /**
  * Único ponto de decisão sobre qual provedor de anúncio é usado e se um
  * anúncio deve ser exibido. Nenhum outro módulo deve saber que provedor
- * está por trás — hoje nenhum está integrado, então os métodos retornam
+ * está por trás. Hoje nenhum está integrado, então os métodos retornam
  * vazio/no-op de propósito. Trocar por Google Ads/Ad Manager/Amazon
  * Ads/Microsoft Ads/Unity Ads no futuro não deve exigir mudanças em quem
  * consome este serviço.

@@ -1,7 +1,7 @@
 """
 URL configuration for config project.
 
-The Django admin site is intentionally not installed — the project ships its
+The Django admin site is intentionally not installed: the project ships its
 own admin panel in the frontend, so no admin/ route is exposed here.
 
 API routes are versioned from the start under /api/v1/, each local app owns

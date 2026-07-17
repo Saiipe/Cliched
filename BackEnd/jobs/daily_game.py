@@ -1,6 +1,6 @@
 """Entry point for the daily-challenge generation job.
 
-Not wired to a scheduler yet — run manually (`python jobs/daily_game.py`)
+Not wired to a scheduler yet: run manually (`python jobs/daily_game.py`)
 or from a future Celery/APScheduler beat. Kept isolated here so integrating
 a real scheduler later doesn't touch app code.
 

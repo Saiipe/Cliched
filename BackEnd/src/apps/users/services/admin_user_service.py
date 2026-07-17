@@ -9,7 +9,7 @@ User = get_user_model()
 
 class AdminUserService:
     """Dados exibidos na tela de Usuários do admin: perfil, último acesso e
-    uma posição de "rank" — calculada na hora (por total de vitórias no
+    uma posição de "rank", calculada na hora (por total de vitórias no
     desafio diário), não é um sistema de ranking persistido/pontuado."""
 
     @staticmethod

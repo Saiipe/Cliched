@@ -16,7 +16,7 @@ class GameService:
     """Orchestrates a player's run at the daily challenge.
 
     The answer movie is never present in any payload while status is
-    "playing" — only the frozen clues and the reveal (post-game) expose
+    "playing"; only the frozen clues and the reveal (post-game) expose
     movie data."""
 
     def __init__(self):

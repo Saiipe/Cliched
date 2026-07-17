@@ -9,7 +9,7 @@ from shared.responses.api_response import success_response
 
 class AdminUserListView(APIView):
     """Lista de usuários pro admin: perfil, último acesso, total de
-    vitórias e posição calculada (por vitórias) — não é um ranking
+    vitórias e posição calculada (por vitórias); não é um ranking
     persistido, só uma ordenação exibida na hora."""
 
     permission_classes = [IsAdmin]

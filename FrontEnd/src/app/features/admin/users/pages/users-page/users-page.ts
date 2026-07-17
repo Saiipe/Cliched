@@ -50,7 +50,7 @@ import { AdminUserService } from '../../services/admin-user.service';
               @for (user of service.users(); track user.id) {
                 <tr class="border-b border-border last:border-0">
                   <td class="px-4 py-3 font-medium text-foreground">{{ user.username }}</td>
-                  <td class="px-4 py-3 text-muted">{{ user.email || '—' }}</td>
+                  <td class="px-4 py-3 text-muted">{{ user.email || '-' }}</td>
                   <td class="px-4 py-3">
                     <div class="flex flex-wrap gap-1.5">
                       @if (user.is_superuser) {

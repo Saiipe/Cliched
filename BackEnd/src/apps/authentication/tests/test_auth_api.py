@@ -81,7 +81,7 @@ class AuthAPITests(APITestCase):
 
     def test_username_available_does_not_reveal_rejection_reason(self):
         # Mesma resposta (só `available`) tanto pra formato inválido quanto
-        # pra username já em uso — não deve haver nenhum outro campo (ex.:
+        # pra username já em uso: não deve haver nenhum outro campo (ex.:
         # "reason", "errors") que entregue a regra de caracteres aceitos.
         self.register()
         taken = self.client.get(
@@ -107,7 +107,7 @@ class AuthAPITests(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_register_accepts_common_nickname_punctuation(self):
-        # "T4uan" (o exemplo original do usuário) tem só 5 caracteres — com a
+        # "T4uan" (o exemplo original do usuário) tem só 5 caracteres; com a
         # regra de "mais de 5 caracteres" adicionada depois, precisa de mais
         # um caractere pra ser válido.
         for username in ("T4uan1", "Jjuli$", "joab?!"):
@@ -144,7 +144,7 @@ class AuthAPITests(APITestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_register_cannot_inject_admin_flags(self):
-        # A flag de admin só muda direto no banco — payload malicioso com
+        # A flag de admin só muda direto no banco: payload malicioso com
         # is_superuser/is_premium deve ser simplesmente ignorado.
         response = self.register(is_superuser=True, is_premium=True)
         self.assertEqual(response.status_code, 201)
