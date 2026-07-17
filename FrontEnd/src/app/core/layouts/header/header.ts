@@ -5,6 +5,7 @@ import { IconChevronDown, IconFlame, IconKey, IconLogout } from '@tabler/icons-a
 
 import { AuthModalService } from '../../../features/auth/services/auth-modal.service';
 import { AuthService } from '../../../features/auth/services/auth.service';
+import { ChangePasswordModalService } from '../../../features/auth/services/change-password-modal.service';
 import { Button } from '../../../shared/ui/button/button';
 import { Icon } from '../../../shared/ui/icon/icon';
 
@@ -85,14 +86,14 @@ const NAV_LINKS: readonly NavLink[] = [
                 <div
                   class="absolute right-0 top-full mt-3 w-48 overflow-hidden rounded-xl border border-border bg-surface-elevated shadow-lg"
                 >
-                  <a
-                    routerLink="/alterar-senha"
-                    class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground transition hover:bg-bg"
-                    (click)="closeMenu()"
+                  <button
+                    type="button"
+                    class="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-foreground transition hover:bg-bg"
+                    (click)="openChangePassword()"
                   >
                     <app-icon [icon]="keyIcon" [size]="16" class="text-muted" />
                     Alterar senha
-                  </a>
+                  </button>
                   <button
                     type="button"
                     class="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-foreground transition hover:bg-bg"
@@ -120,6 +121,7 @@ const NAV_LINKS: readonly NavLink[] = [
 export class Header {
   private readonly authService = inject(AuthService);
   protected readonly authModal = inject(AuthModalService);
+  private readonly changePasswordModal = inject(ChangePasswordModalService);
 
   protected readonly navLinks = NAV_LINKS;
   protected readonly flameIcon = IconFlame;
@@ -137,6 +139,11 @@ export class Header {
 
   protected closeMenu(): void {
     this.menuOpen.set(false);
+  }
+
+  protected openChangePassword(): void {
+    this.closeMenu();
+    this.changePasswordModal.open();
   }
 
   protected logout(): void {

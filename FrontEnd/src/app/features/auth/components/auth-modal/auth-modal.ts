@@ -1,12 +1,39 @@
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { IconLogin2, IconUserPlus, IconX } from '@tabler/icons-angular';
+import { Observable, map, of, switchMap, timer } from 'rxjs';
 
 import { Button } from '../../../../shared/ui/button/button';
 import { Icon } from '../../../../shared/ui/icon/icon';
 import { AuthModalService } from '../../services/auth-modal.service';
 import { AuthService } from '../../services/auth.service';
+
+const USERNAME_CHECK_DEBOUNCE_MS = 400;
+
+/** Validador ajax: espera o usuário parar de digitar e pergunta pro
+ * backend se o nome de usuário está disponível — de propósito não
+ * verifica o formato no cliente nem explica a regra na tela (só o
+ * backend sabe, e só devolve disponível/indisponível). */
+function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    const value = (control.value ?? '').trim();
+    if (!value) {
+      return of(null);
+    }
+    return timer(USERNAME_CHECK_DEBOUNCE_MS).pipe(
+      switchMap(() => authService.checkUsernameAvailable(value)),
+      map((available) => (available ? null : { unavailable: true })),
+    );
+  };
+}
 
 @Component({
   selector: 'app-auth-modal',
@@ -53,7 +80,7 @@ import { AuthService } from '../../services/auth.service';
             <form [formGroup]="loginForm" (ngSubmit)="submitLogin()" class="mt-6 space-y-4">
               <div>
                 <label class="text-sm font-medium text-foreground" for="identifier">
-                  E-mail ou nome de usuário
+                  E-mail ou Username
                 </label>
                 <input
                   id="identifier"
@@ -97,6 +124,11 @@ import { AuthService } from '../../services/auth.service';
                   autocomplete="username"
                   class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
                 />
+                @if (registerForm.controls.username.pending) {
+                  <p class="mt-1.5 text-xs text-muted">Verificando...</p>
+                } @else if (usernameUnavailable()) {
+                  <p class="mt-1 text-xs text-error">Nome de usuário indisponível.</p>
+                }
               </div>
 
               <div>
@@ -119,6 +151,7 @@ import { AuthService } from '../../services/auth.service';
                   autocomplete="new-password"
                   class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
                 />
+                <p class="mt-1.5 text-xs text-muted">Mínimo de 7 caracteres.</p>
               </div>
 
               <div>
@@ -202,9 +235,13 @@ export class AuthModal {
   });
 
   protected readonly registerForm = this.formBuilder.nonNullable.group({
-    username: ['', [Validators.required, Validators.minLength(3)]],
+    username: [
+      '',
+      [Validators.required, Validators.minLength(6)],
+      [usernameAvailableValidator(this.authService)],
+    ],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
+    password: ['', [Validators.required, Validators.minLength(7)]],
     passwordConfirm: ['', Validators.required],
     acceptTerms: [false, Validators.requiredTrue],
   });
@@ -231,6 +268,11 @@ export class AuthModal {
   protected passwordsDiverge(): boolean {
     const { password, passwordConfirm } = this.registerForm.getRawValue();
     return passwordConfirm.length > 0 && password !== passwordConfirm;
+  }
+
+  protected usernameUnavailable(): boolean {
+    const control = this.registerForm.controls.username;
+    return control.dirty && !control.pending && control.hasError('unavailable');
   }
 
   protected submitLogin(): void {

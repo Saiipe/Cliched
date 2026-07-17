@@ -55,6 +55,94 @@ class AuthAPITests(APITestCase):
         response = self.register(username="other")
         self.assertEqual(response.status_code, 400)
 
+    def test_username_available_for_new_valid_username(self):
+        response = self.client.get(
+            "/api/v1/auth/username-available/", {"username": "novoUsuario1"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["data"]["available"])
+
+    def test_username_available_false_when_taken(self):
+        self.register()
+        response = self.client.get(
+            "/api/v1/auth/username-available/", {"username": "player"}
+        )
+        self.assertFalse(response.json()["data"]["available"])
+
+    def test_username_available_false_when_invalid_format(self):
+        response = self.client.get(
+            "/api/v1/auth/username-available/", {"username": "<teste>"}
+        )
+        self.assertFalse(response.json()["data"]["available"])
+
+    def test_username_available_false_when_blank(self):
+        response = self.client.get("/api/v1/auth/username-available/", {"username": ""})
+        self.assertFalse(response.json()["data"]["available"])
+
+    def test_username_available_does_not_reveal_rejection_reason(self):
+        # Mesma resposta (só `available`) tanto pra formato inválido quanto
+        # pra username já em uso — não deve haver nenhum outro campo (ex.:
+        # "reason", "errors") que entregue a regra de caracteres aceitos.
+        self.register()
+        taken = self.client.get(
+            "/api/v1/auth/username-available/", {"username": "player"}
+        ).json()["data"]
+        invalid = self.client.get(
+            "/api/v1/auth/username-available/", {"username": "<teste>"}
+        ).json()["data"]
+        self.assertEqual(set(taken.keys()), {"available"})
+        self.assertEqual(set(invalid.keys()), {"available"})
+
+    def test_register_rejects_username_with_space(self):
+        response = self.register(username="joao 12")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("username", response.json()["errors"])
+
+    def test_register_rejects_username_with_angle_brackets(self):
+        response = self.register(username="<teste>")
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_rejects_username_with_quotes(self):
+        response = self.register(username="'joao12")
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_accepts_common_nickname_punctuation(self):
+        # "T4uan" (o exemplo original do usuário) tem só 5 caracteres — com a
+        # regra de "mais de 5 caracteres" adicionada depois, precisa de mais
+        # um caractere pra ser válido.
+        for username in ("T4uan1", "Jjuli$", "joab?!"):
+            with self.subTest(username=username):
+                response = self.register(
+                    username=username, email=f"{username}@example.com"
+                )
+                self.assertEqual(response.status_code, 201)
+
+    def test_register_rejects_username_with_five_characters_or_less(self):
+        response = self.register(username="ab3$!")
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_accepts_username_with_six_characters(self):
+        response = self.register(username="ab3$!9")
+        self.assertEqual(response.status_code, 201)
+
+    def test_register_rejects_username_with_slash(self):
+        response = self.register(username="joao/12")
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_rejects_duplicate_username(self):
+        self.register()
+        response = self.register(email="outro@example.com")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("username", response.json()["errors"])
+
+    def test_register_rejects_password_with_six_characters_or_less(self):
+        response = self.register(password="ab3456", password_confirm="ab3456")
+        self.assertEqual(response.status_code, 400)
+
+    def test_register_accepts_password_with_seven_characters(self):
+        response = self.register(password="ab34567", password_confirm="ab34567")
+        self.assertEqual(response.status_code, 201)
+
     def test_register_cannot_inject_admin_flags(self):
         # A flag de admin só muda direto no banco — payload malicioso com
         # is_superuser/is_premium deve ser simplesmente ignorado.

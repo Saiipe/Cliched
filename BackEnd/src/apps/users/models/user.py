@@ -1,11 +1,7 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.core.validators import RegexValidator
 from django.db import models
 
-username_no_spaces_validator = RegexValidator(
-    regex=r"^\S+$",
-    message="O nome de usuário não pode conter espaços.",
-)
+from shared.validators.common import validate_username_format
 
 
 class UserManager(BaseUserManager):
@@ -38,7 +34,7 @@ class User(AbstractBaseUser):
     username = models.CharField(
         max_length=150,
         unique=True,
-        validators=[username_no_spaces_validator],
+        validators=[validate_username_format],
     )
     email = models.EmailField(blank=True, default="")
     is_superuser = models.BooleanField(default=False)

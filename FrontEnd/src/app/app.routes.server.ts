@@ -50,12 +50,6 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
-    // Guardada por token no localStorage — em prerender não existe sessão,
-    // o guard redirecionaria pro /login em build-time.
-    path: 'alterar-senha',
-    renderMode: RenderMode.Client,
-  },
-  {
     path: '**',
     renderMode: RenderMode.Prerender
   }

@@ -6,17 +6,6 @@ import { AuthModalService } from './features/auth/services/auth-modal.service';
 import { AuthService } from './features/auth/services/auth.service';
 import { TokenStorageService } from './core/services/token-storage.service';
 
-/** Página exige sessão — sem token, abre o modal de login e volta pra Home
- * (não existe mais uma página /login própria para redirecionar). */
-const authGuard = () => {
-  const storage = inject(TokenStorageService);
-  if (storage.access() !== null) {
-    return true;
-  }
-  inject(AuthModalService).open('login');
-  return inject(Router).createUrlTree(['/']);
-};
-
 /** Painel admin exige sessão + `is_superuser`. Sem token, abre o modal de
  * login; logado mas sem a flag, só redireciona (não é problema de sessão,
  * é falta de permissão — abrir o modal de novo não ajudaria). Num hard
@@ -136,14 +125,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/contact/pages/contact-page/contact-page').then(
             (m) => m.ContactPage,
-          ),
-      },
-      {
-        path: 'alterar-senha',
-        canActivate: [authGuard],
-        loadComponent: () =>
-          import('./features/auth/pages/change-password-page/change-password-page').then(
-            (m) => m.ChangePasswordPage,
           ),
       },
       {

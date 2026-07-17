@@ -15,6 +15,7 @@ from apps.authentication.serializers.register_serializer import RegisterSerializ
 from apps.games.services.session_adoption_service import SessionAdoptionService
 from apps.users.serializers.user_serializer import UserSerializer
 from shared.responses.api_response import error_response, success_response
+from shared.validators.common import validate_username_format
 
 User = get_user_model()
 
@@ -44,6 +45,38 @@ def _record_login(request, user) -> None:
     user.last_login = timezone.now()
     user.save(update_fields=["last_login"])
     LoginEvent.objects.create(user=user, ip_address=_client_ip(request))
+
+
+class UsernameAvailabilityView(APIView):
+    """Validador ajax do campo de usuário no cadastro.
+
+    De propósito só devolve um booleano — nunca diz *por que* está
+    indisponível (formato inválido vs. já existe): expor a regra de
+    caracteres aceitos facilitaria testar o allowlist por tentativa e
+    erro. `RegisterSerializer` continua sendo a validação de verdade."""
+
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        summary="Checar disponibilidade de nome de usuário",
+        description="Usado pelo formulário de cadastro para validar o nome de "
+        "usuário enquanto a pessoa digita (`?username=...`). Só informa se está "
+        "disponível ou não.",
+        responses={200: OpenApiTypes.OBJECT},
+        tags=["auth"],
+    )
+    def get(self, request):
+        username = (request.query_params.get("username") or "").strip()
+        available = bool(username) and _is_username_available(username)
+        return success_response(data={"available": available})
+
+
+def _is_username_available(username: str) -> bool:
+    try:
+        validate_username_format(username)
+    except ValidationError:
+        return False
+    return not User.objects.filter(username__iexact=username).exists()
 
 
 class RegisterView(APIView):

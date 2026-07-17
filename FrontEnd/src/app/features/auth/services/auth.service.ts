@@ -50,6 +50,19 @@ export class AuthService {
     return this.storage.access() !== null;
   }
 
+  /** Validador ajax do campo de usuário no cadastro — o backend não diz
+   * *por que* está indisponível (formato ou já em uso), só se está. */
+  checkUsernameAvailable(username: string): Observable<boolean> {
+    return this.http
+      .get<ApiEnvelope<{ available: boolean }>>(this.buildUrl('auth/username-available/'), {
+        params: { username },
+      })
+      .pipe(
+        map((response) => response.data.available),
+        catchError(() => of(true)),
+      );
+  }
+
   login(identifier: string, password: string): void {
     this.beginRequest();
     this.http
