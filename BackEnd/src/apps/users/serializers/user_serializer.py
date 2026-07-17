@@ -5,10 +5,18 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Perfil exposto pela API. `is_staff` é somente leitura — a flag de
-    admin só muda direto no banco, nunca por request."""
+    """Perfil exposto pela API. `is_superuser` é somente leitura — a flag
+    de admin só muda direto no banco, nunca por request."""
 
     class Meta:
         model = User
-        fields = ["id", "username", "email", "avatar_url", "theme", "is_staff"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "is_superuser",
+            "is_active",
+            "is_premium",
+            "date_joined",
+        ]
         read_only_fields = fields

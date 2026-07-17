@@ -18,7 +18,7 @@ class AdminNextChallengeTests(DailyFlowTestsBase):
     def setUp(self):
         super().setUp()
         self.admin = User.objects.create_user(
-            username="admin", password="senha-forte-123", is_staff=True
+            username="admin", password="senha-forte-123", is_superuser=True
         )
         self.client.force_authenticate(self.admin)
 
@@ -41,12 +41,14 @@ class AdminNextChallengeTests(DailyFlowTestsBase):
     def gallery(self):
         return self.client.get("/api/v1/games/daily/next/image/gallery/")
 
-    def test_temporarily_open_without_auth(self):
-        # TODO(auth): the admin endpoints are AllowAny on purpose until the
-        # frontend admin panel gets a login. Flip this test back to asserting
-        # 403 for non-staff when IsAdmin is restored.
+    def test_rejects_unauthenticated(self):
         self.client.force_authenticate(None)
-        self.assertEqual(self.get_next().status_code, 200)
+        self.assertEqual(self.get_next().status_code, 401)
+
+    def test_rejects_non_admin_user(self):
+        player = User.objects.create_user(username="player", password="senha-forte-123")
+        self.client.force_authenticate(player)
+        self.assertEqual(self.get_next().status_code, 403)
 
     def test_get_current_reveals_todays_movie_and_is_not_swappable(self):
         response = self.get_current()

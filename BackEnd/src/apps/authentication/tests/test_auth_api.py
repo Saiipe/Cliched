@@ -57,11 +57,10 @@ class AuthAPITests(APITestCase):
 
     def test_register_cannot_inject_admin_flags(self):
         # A flag de admin só muda direto no banco — payload malicioso com
-        # is_staff/is_superuser/is_premium deve ser simplesmente ignorado.
-        response = self.register(is_staff=True, is_superuser=True, is_premium=True)
+        # is_superuser/is_premium deve ser simplesmente ignorado.
+        response = self.register(is_superuser=True, is_premium=True)
         self.assertEqual(response.status_code, 201)
         user = User.objects.get(username="player")
-        self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
         self.assertFalse(user.is_premium)
 
@@ -149,7 +148,7 @@ class AuthAPITests(APITestCase):
         self.assertEqual(response.status_code, 200)
         data = response.json()["data"]
         self.assertEqual(data["user"]["username"], "player")
-        self.assertFalse(data["user"]["is_staff"])
+        self.assertFalse(data["user"]["is_superuser"])
         self.assertEqual(data["stats"]["current_streak"], 0)
 
     def test_me_requires_auth(self):

@@ -21,6 +21,12 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    // Todo o /admin exige sessão (adminGuard lê o token do localStorage,
+    // que não existe em SSR/build) — precisa renderizar só no navegador.
+    path: 'admin',
+    renderMode: RenderMode.Client,
+  },
+  {
     // Mesmo motivo: consome a API admin ao carregar (e criaria o desafio de
     // amanhã em build-time se fosse pré-renderizada).
     path: 'admin/desafio-diario',

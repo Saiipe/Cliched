@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { IconMovie } from '@tabler/icons-angular';
+import { IconLogout, IconMovie } from '@tabler/icons-angular';
+import { AuthService } from '../../../auth/services/auth.service';
 import { Icon } from '../../../../shared/ui/icon/icon';
 
 interface AdminNavLink {
@@ -53,11 +54,35 @@ const NAV_LINKS: readonly AdminNavLink[] = [
             }
           }
         </nav>
+
+        <div class="flex items-center gap-4">
+          @if (user(); as currentUser) {
+            <span class="text-sm text-muted">
+              Logado como <span class="text-foreground">{{ currentUser.username }}</span>
+            </span>
+          }
+          <button
+            type="button"
+            class="flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+            (click)="logout()"
+          >
+            <app-icon [icon]="logoutIcon" [size]="16" />
+            Sair
+          </button>
+        </div>
       </div>
     </header>
   `,
 })
 export class AdminHeader {
+  private readonly authService = inject(AuthService);
+
   protected readonly navLinks = NAV_LINKS;
   protected readonly movieIcon = IconMovie;
+  protected readonly logoutIcon = IconLogout;
+  protected readonly user = this.authService.user;
+
+  protected logout(): void {
+    this.authService.logout();
+  }
 }

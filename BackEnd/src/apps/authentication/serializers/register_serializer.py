@@ -8,9 +8,9 @@ User = get_user_model()
 class RegisterSerializer(serializers.ModelSerializer):
     """Cadastro público.
 
-    A lista de `fields` é a whitelist de segurança: flags como is_staff
-    (admin), is_premium e is_moderator ficam de fora de propósito — só podem
-    ser alteradas direto no banco, nunca por payload do cliente."""
+    A lista de `fields` é a whitelist de segurança: flags como
+    is_superuser (admin) e is_premium ficam de fora de propósito — só
+    podem ser alteradas direto no banco, nunca por payload do cliente."""
 
     password = serializers.CharField(write_only=True)
     password_confirm = serializers.CharField(write_only=True)

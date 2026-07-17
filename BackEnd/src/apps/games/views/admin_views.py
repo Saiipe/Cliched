@@ -5,16 +5,12 @@ from django.utils import timezone
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
-from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 
 from apps.games.models import DailyChallenge
 from apps.games.services.daily_challenge_service import DailyChallengeService
+from shared.permissions.roles import IsAdmin
 from shared.responses.api_response import error_response, success_response
-
-# TODO(auth): these admin endpoints are AllowAny on purpose, temporarily —
-# the frontend admin panel has no login yet. Switch back to
-# shared.permissions.roles.IsAdmin as soon as authentication lands.
 
 
 def _challenge_payload(challenge: DailyChallenge) -> dict:
@@ -47,7 +43,7 @@ class CurrentChallengeAdminView(APIView):
     """Reveal today's (live) movie for the admin — read-only, since a
     challenge that already started can never be swapped/edited."""
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdmin]
 
     @extend_schema(
         summary="[Admin] Ver o filme de hoje",
@@ -68,7 +64,7 @@ class CurrentChallengeAdminView(APIView):
 class NextChallengeAdminView(APIView):
     """Preview tomorrow's challenge one day ahead (creates it if missing)."""
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdmin]
 
     @extend_schema(
         summary="[Admin] Ver o filme de amanhã",
@@ -93,7 +89,7 @@ class SwapNextChallengeAdminView(APIView):
     Body: {"tmdb_id": <int>} for a specific movie, or empty for a new
     random pick."""
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdmin]
 
     @extend_schema(
         summary="[Admin] Trocar o filme de amanhã",
@@ -134,7 +130,7 @@ class NextChallengeImageAdminView(APIView):
 
     Body: {"image_source": "poster" | "backdrop", "image_path": <optional>}."""
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdmin]
 
     @extend_schema(
         summary="[Admin] Escolher a imagem do desafio de amanhã",
@@ -180,7 +176,7 @@ class NextChallengeImageGalleryAdminView(APIView):
     single default one; this is the full pick-from gallery. Backdrops are
     intentionally left out — this game only ever shows posters."""
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdmin]
 
     @extend_schema(
         summary="[Admin] Galeria de pôsteres do filme de amanhã",
@@ -206,7 +202,7 @@ class AdvanceChallengeAdminView(APIView):
     into today's, without waiting for real midnight. Remove this endpoint
     once the frontend no longer needs to fast-forward for manual testing."""
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdmin]
 
     @extend_schema(
         summary="[Admin/Teste] Adiantar para o próximo desafio",

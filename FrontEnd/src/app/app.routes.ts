@@ -1,7 +1,9 @@
 import { inject } from '@angular/core';
 import { Router, Routes } from '@angular/router';
+import { map, of } from 'rxjs';
 
 import { AuthModalService } from './features/auth/services/auth-modal.service';
+import { AuthService } from './features/auth/services/auth.service';
 import { TokenStorageService } from './core/services/token-storage.service';
 
 /** Página exige sessão — sem token, abre o modal de login e volta pra Home
@@ -15,7 +17,72 @@ const authGuard = () => {
   return inject(Router).createUrlTree(['/']);
 };
 
+/** Painel admin exige sessão + `is_superuser`. Sem token, abre o modal de
+ * login; logado mas sem a flag, só redireciona (não é problema de sessão,
+ * é falta de permissão — abrir o modal de novo não ajudaria). Num hard
+ * refresh o perfil ainda pode não estar em cache, então espera a resposta
+ * de `users/me/` em vez de confiar só no signal local. */
+const adminGuard = () => {
+  const storage = inject(TokenStorageService);
+  const router = inject(Router);
+
+  if (storage.access() === null) {
+    inject(AuthModalService).open('login');
+    return of(router.createUrlTree(['/']));
+  }
+
+  const auth = inject(AuthService);
+  const cachedUser = auth.user();
+  if (cachedUser) {
+    return of(cachedUser.is_superuser || router.createUrlTree(['/']));
+  }
+
+  return auth
+    .fetchMe()
+    .pipe(map((payload) => (payload?.user.is_superuser ? true : router.createUrlTree(['/']))));
+};
+
 export const routes: Routes = [
+  {
+    // Precisa vir antes do shell público: 'path: ""' abaixo casa com
+    // qualquer URL (consome zero segmentos) e tem um '**' interno para o
+    // 404 público — se 'admin' viesse depois, /admin seria engolido por
+    // esse wildcard antes mesmo de chegar aqui.
+    path: 'admin',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/admin/layout/admin-shell/admin-shell').then((m) => m.AdminShell),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/admin/dashboard/pages/dashboard-page/dashboard-page').then(
+            (m) => m.DashboardPage,
+          ),
+      },
+      {
+        path: 'jogos',
+        loadComponent: () =>
+          import('./features/admin/games/pages/games-page/games-page').then(
+            (m) => m.AdminGamesPage,
+          ),
+      },
+      {
+        path: 'desafio-diario',
+        loadComponent: () =>
+          import(
+            './features/admin/daily-challenge/pages/daily-challenge-page/daily-challenge-page'
+          ).then((m) => m.AdminDailyChallengePage),
+      },
+      {
+        path: 'configuracoes',
+        loadComponent: () =>
+          import('./features/admin/settings/pages/settings-page/settings-page').then(
+            (m) => m.AdminSettingsPage,
+          ),
+      },
+    ],
+  },
   {
     path: '',
     loadComponent: () =>
@@ -100,43 +167,9 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'admin',
-    loadComponent: () =>
-      import('./features/admin/layout/admin-shell/admin-shell').then((m) => m.AdminShell),
-    children: [
-      {
-        path: '',
-        loadComponent: () =>
-          import('./features/admin/dashboard/pages/dashboard-page/dashboard-page').then(
-            (m) => m.DashboardPage,
-          ),
-      },
-      {
-        path: 'jogos',
-        loadComponent: () =>
-          import('./features/admin/games/pages/games-page/games-page').then(
-            (m) => m.AdminGamesPage,
-          ),
-      },
-      {
-        path: 'desafio-diario',
-        loadComponent: () =>
-          import(
-            './features/admin/daily-challenge/pages/daily-challenge-page/daily-challenge-page'
-          ).then((m) => m.AdminDailyChallengePage),
-      },
-      {
-        path: 'configuracoes',
-        loadComponent: () =>
-          import('./features/admin/settings/pages/settings-page/settings-page').then(
-            (m) => m.AdminSettingsPage,
-          ),
-      },
-    ],
-  },
-  {
-    // Fallback final — cobre caminhos que nem chegam a bater com o prefixo
-    // 'admin' (o wildcard lá dentro do shell público já cobre o resto).
+    // Nunca deveria ser alcançado na prática (o '**' do shell público
+    // acima já cobre qualquer URL que não seja 'admin'), mas fica como
+    // rede de segurança.
     path: '**',
     loadComponent: () =>
       import('./features/not-found/pages/not-found-page/not-found-page').then(

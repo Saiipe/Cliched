@@ -2,7 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { AnonSessionService } from '../../../core/services/anon-session.service';
@@ -105,17 +105,26 @@ export class AuthService {
   }
 
   loadMe(): void {
-    this.http.get<ApiEnvelope<MePayload>>(this.buildUrl('users/me/')).subscribe({
-      next: (response) => {
+    this.fetchMe().subscribe();
+  }
+
+  /** Versão observable de `loadMe()` — usada pelo `adminGuard`, que precisa
+   * esperar a resposta antes de decidir se deixa entrar (o cache do signal
+   * `user()` pode ainda não existir num hard refresh). */
+  fetchMe(): Observable<MePayload | null> {
+    return this.http.get<ApiEnvelope<MePayload>>(this.buildUrl('users/me/')).pipe(
+      tap((response) => {
         this.userState.set(response.data.user);
         this.statsState.set(response.data.stats);
-      },
-      error: () => {
+      }),
+      map((response) => response.data),
+      catchError(() => {
         // Access e refresh expirados (interceptor já limpou o storage).
         this.userState.set(null);
         this.statsState.set(null);
-      },
-    });
+        return of(null);
+      }),
+    );
   }
 
   clearMessages(): void {

@@ -2,9 +2,10 @@ export interface UserProfile {
   readonly id: number;
   readonly username: string;
   readonly email: string;
-  readonly avatar_url: string;
-  readonly theme: string;
-  readonly is_staff: boolean;
+  readonly is_superuser: boolean;
+  readonly is_active: boolean;
+  readonly is_premium: boolean;
+  readonly date_joined: string;
 }
 
 export interface AuthTokens {

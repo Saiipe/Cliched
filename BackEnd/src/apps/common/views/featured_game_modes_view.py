@@ -5,20 +5,20 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 
 from apps.common.services.featured_game_modes_service import FeaturedGameModesService
+from shared.permissions.roles import IsAdmin
 from shared.responses.api_response import error_response, success_response
-
-# TODO(auth): POST is AllowAny on purpose, temporarily — the frontend admin
-# panel has no login yet. Switch to shared.permissions.roles.IsAdmin once
-# authentication lands (GET stays public either way, the home page reads it).
 
 
 class FeaturedGameModesView(APIView):
     """Which game modes are highlighted on the home page, in order.
 
     GET is public (the home page reads it directly); POST replaces the
-    whole ordered list — used by the admin "Jogos" picker."""
+    whole ordered list — used by the admin "Jogos" picker, admin-only."""
 
-    permission_classes = [AllowAny]
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsAdmin()]
+        return [AllowAny()]
 
     @extend_schema(
         summary="Modos de jogo em destaque na Home",
