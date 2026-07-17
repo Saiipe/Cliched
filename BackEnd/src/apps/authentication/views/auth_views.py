@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
@@ -9,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from apps.authentication.models import LoginEvent
 from apps.authentication.serializers.register_serializer import RegisterSerializer
 from apps.games.services.session_adoption_service import SessionAdoptionService
 from apps.users.serializers.user_serializer import UserSerializer
@@ -26,6 +28,22 @@ def _adopt_anon_progress(request, user) -> None:
     """Se o jogador vinha jogando anônimo (X-Anon-Token), o progresso passa
     a pertencer à conta — é o "salvar progresso ao logar"."""
     SessionAdoptionService.adopt(user, request.headers.get("X-Anon-Token"))
+
+
+def _client_ip(request) -> str | None:
+    forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.META.get("REMOTE_ADDR")
+
+
+def _record_login(request, user) -> None:
+    """Histórico de acesso exibido pro admin na tela de Usuários. Também
+    atualiza `last_login` — não usamos `django.contrib.auth.login()` (é
+    JWT, sem sessão), então esse update não acontece sozinho."""
+    user.last_login = timezone.now()
+    user.save(update_fields=["last_login"])
+    LoginEvent.objects.create(user=user, ip_address=_client_ip(request))
 
 
 class RegisterView(APIView):
@@ -49,6 +67,7 @@ class RegisterView(APIView):
 
         user = serializer.save()
         _adopt_anon_progress(request, user)
+        _record_login(request, user)
         return success_response(
             data={"user": UserSerializer(user).data, "tokens": _tokens_for(user)},
             message="Conta criada com sucesso.",
@@ -94,6 +113,7 @@ class LoginView(APIView):
             return error_response(message="Credenciais inválidas.", status=401)
 
         _adopt_anon_progress(request, user)
+        _record_login(request, user)
         return success_response(
             data={"user": UserSerializer(user).data, "tokens": _tokens_for(user)},
             message="Login efetuado.",

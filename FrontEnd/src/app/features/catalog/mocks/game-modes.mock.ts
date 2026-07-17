@@ -18,7 +18,7 @@ export const GAME_MODES_MOCK: readonly GameMode[] = [
     title: 'Sinopse',
     description: 'Adivinhe o filme lendo apenas a sinopse. ',
     icon: IconFileText,
-    status: 'available',
+    status: 'coming-soon',
     route: '/jogar/sinopse',
   },
   {
@@ -42,7 +42,7 @@ export const GAME_MODES_MOCK: readonly GameMode[] = [
     title: 'Elenco',
     description: 'Descubra o filme a partir do elenco principal.',
     icon: IconUsers,
-    status: 'available',
+    status: 'coming-soon',
     route: '/jogar/elenco',
   },
   {

@@ -81,6 +81,13 @@ export const routes: Routes = [
             (m) => m.AdminSettingsPage,
           ),
       },
+      {
+        path: 'usuarios',
+        loadComponent: () =>
+          import('./features/admin/users/pages/users-page/users-page').then(
+            (m) => m.AdminUsersPage,
+          ),
+      },
     ],
   },
   {

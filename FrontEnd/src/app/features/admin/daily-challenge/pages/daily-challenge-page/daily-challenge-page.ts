@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { IconCalendarStar, IconCheck, IconDice5, IconPlayerTrackNextFilled } from '@tabler/icons-angular';
+import { RouterLink } from '@angular/router';
+import { IconArrowLeft, IconCalendarStar, IconCheck, IconDice5, IconPlayerTrackNextFilled } from '@tabler/icons-angular';
 import { catchError, debounceTime, distinctUntilChanged, of, Subject, switchMap } from 'rxjs';
 
 import { Icon } from '../../../../../shared/ui/icon/icon';
@@ -28,12 +29,21 @@ const LANGUAGE_FILTERS: readonly { readonly value: LanguageFilter; readonly labe
 @Component({
   selector: 'app-admin-daily-challenge-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon],
+  imports: [Icon, RouterLink],
   template: `
     <div class="border-b border-border">
-      <div class="mx-auto flex max-w-6xl items-center gap-2 px-6 py-3 text-sm text-muted">
-        <app-icon [icon]="calendarIcon" [size]="16" />
-        Painel administrativo · Desafio diário
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-6 py-3">
+        <span class="flex items-center gap-2 text-sm text-muted">
+          <app-icon [icon]="calendarIcon" [size]="16" />
+          Painel administrativo · Desafio diário
+        </span>
+        <a
+          routerLink="/admin/jogos"
+          class="flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+        >
+          <app-icon [icon]="backIcon" [size]="16" />
+          Voltar
+        </a>
       </div>
     </div>
 
@@ -312,6 +322,7 @@ export class AdminDailyChallengePage implements OnInit {
   private readonly querySubject = new Subject<string>();
 
   protected readonly calendarIcon = IconCalendarStar;
+  protected readonly backIcon = IconArrowLeft;
   protected readonly checkIcon = IconCheck;
   protected readonly diceIcon = IconDice5;
   protected readonly fastForwardIcon = IconPlayerTrackNextFilled;

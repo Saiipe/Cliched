@@ -44,6 +44,12 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    // Lista de usuários + histórico de login, consumida via API — mesmo
+    // motivo das outras telas admin acima.
+    path: 'admin/usuarios',
+    renderMode: RenderMode.Client,
+  },
+  {
     // Guardada por token no localStorage — em prerender não existe sessão,
     // o guard redirecionaria pro /login em build-time.
     path: 'alterar-senha',

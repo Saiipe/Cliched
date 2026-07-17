@@ -1,6 +1,7 @@
+import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { IconLogout, IconMovie } from '@tabler/icons-angular';
+import { IconLogout } from '@tabler/icons-angular';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Icon } from '../../../../shared/ui/icon/icon';
 
@@ -12,9 +13,7 @@ interface AdminNavLink {
 const NAV_LINKS: readonly AdminNavLink[] = [
   { label: 'Dashboard', path: '/admin' },
   { label: 'Jogos', path: '/admin/jogos' },
-  { label: 'Filmes', path: null },
-  { label: 'Sinopses', path: null },
-  { label: 'Usuários', path: null },
+  { label: 'Usuários', path: '/admin/usuarios' },
   { label: 'Configurações', path: '/admin/configuracoes' },
 ];
 
@@ -27,16 +26,21 @@ const NAV_LINKS: readonly AdminNavLink[] = [
 @Component({
   selector: 'app-admin-header',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, Icon],
+  imports: [RouterLink, RouterLinkActive, Icon, NgOptimizedImage],
   template: `
     <header class="sticky top-0 z-10 border-b border-border bg-surface">
       <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <div class="flex items-center gap-2.5">
-          <span class="flex size-8 items-center justify-center rounded-lg bg-surface-elevated">
-            <app-icon [icon]="movieIcon" [size]="18" />
-          </span>
-          <span class="text-sm font-semibold text-foreground">Studio</span>
-        </div>
+        <a routerLink="/" class="flex items-center gap-2.5">
+          <img
+            ngSrc="android-chrome-512x512.png"
+            width="32"
+            height="32"
+            priority
+            alt=""
+            class="size-8"
+          />
+          <span class="text-sm font-semibold text-foreground">Cliched</span>
+        </a>
 
         <nav aria-label="Navegação administrativa" class="hidden items-center gap-8 md:flex">
           @for (link of navLinks; track link.label) {
@@ -78,7 +82,6 @@ export class AdminHeader {
   private readonly authService = inject(AuthService);
 
   protected readonly navLinks = NAV_LINKS;
-  protected readonly movieIcon = IconMovie;
   protected readonly logoutIcon = IconLogout;
   protected readonly user = this.authService.user;
 
