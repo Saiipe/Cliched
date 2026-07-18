@@ -87,7 +87,7 @@ function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn 
                   type="text"
                   formControlName="identifier"
                   autocomplete="username"
-                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
+                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
                 />
               </div>
 
@@ -98,7 +98,7 @@ function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn 
                   type="password"
                   formControlName="password"
                   autocomplete="current-password"
-                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
+                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
                 />
               </div>
 
@@ -122,7 +122,7 @@ function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn 
                   type="text"
                   formControlName="username"
                   autocomplete="username"
-                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
+                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
                 />
                 @if (registerForm.controls.username.pending) {
                   <p class="mt-1.5 text-xs text-muted">Verificando...</p>
@@ -138,7 +138,7 @@ function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn 
                   type="email"
                   formControlName="email"
                   autocomplete="email"
-                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
+                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
                 />
               </div>
 
@@ -149,7 +149,7 @@ function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn 
                   type="password"
                   formControlName="password"
                   autocomplete="new-password"
-                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
+                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
                 />
                 <p class="mt-1.5 text-xs text-muted">Mínimo de 7 caracteres.</p>
               </div>
@@ -163,7 +163,7 @@ function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn 
                   type="password"
                   formControlName="passwordConfirm"
                   autocomplete="new-password"
-                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
+                  class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
                 />
                 @if (passwordsDiverge()) {
                   <p class="mt-1.5 text-xs text-error">As senhas não conferem.</p>

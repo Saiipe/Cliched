@@ -37,7 +37,7 @@ export type CinemaDoodlesVariant = 'not-found' | 'hero';
 
     <!-- Claquete -->
     <svg
-      class="illustration-float absolute left-[8%] top-[12%] w-24 -rotate-12 text-muted/50 sm:w-32"
+      class="illustration-float absolute left-[8%] top-[12%] hidden w-24 -rotate-12 text-muted/50 sm:block sm:w-32"
       viewBox="0 0 120 104"
       fill="none"
       stroke="currentColor"
@@ -54,7 +54,7 @@ export type CinemaDoodlesVariant = 'not-found' | 'hero';
 
     <!-- Ingresso -->
     <svg
-      class="illustration-float-delayed absolute right-[8%] top-[16%] w-24 rotate-12 text-muted/50 sm:w-32"
+      class="illustration-float-delayed absolute right-[8%] top-[16%] hidden w-24 rotate-12 text-muted/50 sm:block sm:w-32"
       viewBox="0 0 130 76"
       fill="none"
       stroke="currentColor"
@@ -73,7 +73,7 @@ export type CinemaDoodlesVariant = 'not-found' | 'hero';
 
     <!-- Pipoca -->
     <svg
-      class="illustration-float absolute bottom-[10%] left-[12%] w-20 rotate-6 text-muted/50 sm:w-28"
+      class="illustration-float absolute bottom-[10%] left-[12%] hidden w-20 rotate-6 text-muted/50 sm:block sm:w-28"
       viewBox="0 0 100 112"
       fill="none"
       stroke="currentColor"
@@ -91,7 +91,7 @@ export type CinemaDoodlesVariant = 'not-found' | 'hero';
 
     <!-- Câmera de cinema -->
     <svg
-      class="illustration-float-delayed absolute bottom-[14%] right-[10%] w-24 -rotate-6 text-muted/50 sm:w-32"
+      class="illustration-float-delayed absolute bottom-[14%] right-[10%] hidden w-24 -rotate-6 text-muted/50 sm:block sm:w-32"
       viewBox="0 0 120 96"
       fill="none"
       stroke="currentColor"

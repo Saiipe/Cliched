@@ -20,7 +20,7 @@ const TMDB_THUMB_BASE_URL = 'https://image.tmdb.org/t/p/w92';
         (focus)="onFocus()"
         (blur)="onBlur()"
         autocomplete="off"
-        class="w-full rounded-2xl border border-border bg-bg px-4 py-3 text-sm text-foreground outline-none transition focus:border-secondary"
+        class="w-full rounded-2xl border border-border bg-bg px-4 py-3 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
         placeholder="Digite o nome do filme..."
       />
 

@@ -9,7 +9,7 @@ import { CatalogService } from '../../../catalog/services/catalog.service';
   imports: [RouterLink, GameModeCard],
   template: `
     <section class="mx-auto max-w-6xl px-6 py-16">
-      <div class="flex items-end justify-between">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 class="text-2xl font-bold text-foreground">Modos de jogo</h2>
           <p class="mt-1 text-muted">Escolha como quer testar seu repertório cinematográfico.</p>

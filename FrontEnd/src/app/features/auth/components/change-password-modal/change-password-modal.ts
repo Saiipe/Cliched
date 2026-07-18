@@ -41,7 +41,7 @@ import { ChangePasswordModalService } from '../../services/change-password-modal
                 type="password"
                 formControlName="current"
                 autocomplete="current-password"
-                class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
+                class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
               />
             </div>
 
@@ -52,7 +52,7 @@ import { ChangePasswordModalService } from '../../services/change-password-modal
                 type="password"
                 formControlName="next"
                 autocomplete="new-password"
-                class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
+                class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
               />
               <p class="mt-1.5 text-xs text-muted">Mínimo de 7 caracteres.</p>
             </div>
@@ -66,7 +66,7 @@ import { ChangePasswordModalService } from '../../services/change-password-modal
                 type="password"
                 formControlName="confirm"
                 autocomplete="new-password"
-                class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-secondary"
+                class="mt-1.5 w-full rounded-xl border border-border bg-bg px-4 py-2.5 text-base text-foreground outline-none transition focus:border-secondary sm:text-sm"
               />
               @if (passwordsDiverge()) {
                 <p class="mt-1.5 text-xs text-error">As novas senhas não conferem.</p>

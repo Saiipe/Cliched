@@ -11,7 +11,7 @@ const PREVIEW_SIZE = 5;
   imports: [RouterLink, RankingTable],
   template: `
     <section class="mx-auto max-w-6xl px-6 py-16">
-      <div class="flex items-end justify-between">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 class="text-2xl font-bold text-foreground">Ranking da semana</h2>
           <p class="mt-1 text-muted">Os melhores cinéfilos da comunidade.</p>
