@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { IconMailForward, IconTicket, IconUserPlus, IconX } from '@tabler/icons-angular';
+import { IconMailCheck, IconMailForward, IconTicket, IconUserPlus, IconX } from '@tabler/icons-angular';
 import { Observable, map, of, switchMap, timer } from 'rxjs';
 
 import { Button } from '../../../../shared/ui/button/button';
@@ -216,6 +216,26 @@ function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn 
                   {{ submitting() ? 'Criando conta...' : 'Criar conta' }}
                 </app-button>
               </form>
+            } @else if (notice()) {
+              <!-- Alerta de confirmação: substitui o formulário assim que o
+                   pedido é aceito, inclusive em tentativas repetidas (o
+                   backend sempre responde igual, exista a conta ou não —
+                   ver PasswordResetRequestView), pra deixar bem claro que
+                   um e-mail está a caminho. -->
+              <div class="mt-6 rounded-2xl border border-success/40 bg-success/10 p-5 text-center">
+                <span class="mx-auto flex size-12 items-center justify-center rounded-2xl bg-success/15">
+                  <app-icon [icon]="mailSentIcon" [size]="24" class="text-success" />
+                </span>
+                <h2 class="mt-3 text-base font-semibold text-foreground">Verifique seu e-mail!</h2>
+                <p class="mt-1 text-sm text-muted">{{ notice() }}</p>
+                <button
+                  type="button"
+                  class="mt-4 text-sm font-medium text-secondary hover:underline"
+                  (click)="backToLogin()"
+                >
+                  Voltar para o login
+                </button>
+              </div>
             } @else {
               <form [formGroup]="forgotForm" (ngSubmit)="submitForgot()" class="mt-6 space-y-4">
                 <div>
@@ -243,18 +263,13 @@ function usernameAvailableValidator(authService: AuthService): AsyncValidatorFn 
                 <button
                   type="button"
                   class="block w-full text-center text-sm text-muted hover:text-foreground"
-                  (click)="authModal.open('login')"
+                  (click)="backToLogin()"
                 >
                   Voltar para o login
                 </button>
               </form>
             }
 
-            @if (notice()) {
-              <p class="mt-4 rounded-xl border border-success/40 bg-success/10 px-4 py-3 text-sm text-success">
-                {{ notice() }}
-              </p>
-            }
             @if (error()) {
               <p class="mt-4 rounded-xl border border-error/30 bg-error/10 px-4 py-3 text-sm text-error">
                 {{ error() }}
@@ -281,6 +296,7 @@ export class AuthModal {
   protected readonly authModal = inject(AuthModalService);
 
   protected readonly closeIcon = IconX;
+  protected readonly mailSentIcon = IconMailCheck;
   protected readonly filmHoles = Array.from({ length: 10 });
 
   protected readonly mode = this.authModal.mode;
@@ -355,11 +371,22 @@ export class AuthModal {
   }
 
   protected toggleMode(): void {
+    this.authService.clearMessages();
     this.authModal.open(this.mode() === 'login' ? 'register' : 'login');
   }
 
   protected openForgot(): void {
+    this.authService.clearMessages();
     this.authModal.open('forgot');
+  }
+
+  /** Sai do alerta "verifique seu e-mail" (ou do formulário de qualquer
+   * modo) de volta pro login. Limpa a mensagem de sucesso, senão reabrir
+   * "esqueci minha senha" depois mostraria o alerta velho sem ter
+   * enviado nada de novo. */
+  protected backToLogin(): void {
+    this.authService.clearMessages();
+    this.authModal.open('login');
   }
 
   protected close(): void {
