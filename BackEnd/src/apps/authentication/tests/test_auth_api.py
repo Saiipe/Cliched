@@ -4,6 +4,8 @@ from urllib.parse import parse_qs, urlparse
 
 from django.contrib.auth import get_user_model
 from django.core import mail
+from django.core.cache import cache
+from django.test import override_settings
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
@@ -262,6 +264,10 @@ class AuthAPITests(APITestCase):
 
 class PasswordResetTests(APITestCase):
     def setUp(self):
+        # O rate limit do pedido de redefinição usa o cache (LocMemCache
+        # em dev/test); sem limpar, um cooldown setado num teste vaza
+        # pro próximo que use o mesmo e-mail.
+        cache.clear()
         self.user = User.objects.create_user(
             username="player", email="player@example.com", password="senha-forte-123"
         )
@@ -291,6 +297,43 @@ class PasswordResetTests(APITestCase):
         self.assertEqual(known.status_code, unknown.status_code)
         self.assertEqual(known.json()["message"], unknown.json()["message"])
         self.assertEqual(len(mail.outbox), 0)
+
+    @override_settings(PASSWORD_RESET_COOLDOWN_SECONDS=1800)
+    def test_second_request_within_cooldown_does_not_send_again(self):
+        first = self._request_reset()
+        second = self._request_reset()
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(second.json()["message"], first.json()["message"])
+        self.assertEqual(len(mail.outbox), 1)
+
+    @override_settings(PASSWORD_RESET_COOLDOWN_SECONDS=1800)
+    def test_cooldown_is_per_email_not_global(self):
+        User.objects.create_user(
+            username="outro", email="outro@example.com", password="senha-forte-123"
+        )
+
+        self._request_reset(email="player@example.com")
+        self._request_reset(email="outro@example.com")
+
+        self.assertEqual(len(mail.outbox), 2)
+
+    @override_settings(PASSWORD_RESET_COOLDOWN_SECONDS=0)
+    def test_cooldown_zero_allows_immediate_resend(self):
+        self._request_reset()
+        self._request_reset()
+
+        self.assertEqual(len(mail.outbox), 2)
+
+    def test_password_reset_link_expires_in_two_hours_by_default(self):
+        # Regressão de configuração: o token de redefinição usa
+        # PASSWORD_RESET_TIMEOUT (django.contrib.auth.tokens) pra decidir
+        # se expirou; pedido explícito foi 2h, bem menor que o default do
+        # Django (3 dias).
+        from django.conf import settings
+
+        self.assertEqual(settings.PASSWORD_RESET_TIMEOUT, 2 * 60 * 60)
 
     def test_confirm_reset_changes_password(self):
         self._request_reset()

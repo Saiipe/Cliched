@@ -13,7 +13,15 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 SRC_DIR = BASE_DIR / "src"
 
-load_dotenv(BASE_DIR / ".env")
+# override=True: sem isso, o valor default do dotenv (não sobrescrever
+# variável já existente em os.environ) faz o autoreload do `runserver`
+# ignorar edições no .env pra sempre, pro processo inteiro — o restart do
+# StatReloader é um `os.execv()`, que herda o `os.environ` do processo
+# anterior (já populado pela 1ª leitura do .env), então uma chave só é
+# "vista" de novo se o .env puder sobrescrever o que já está no ambiente.
+# .env é a fonte da verdade neste projeto (nunca setamos as env vars por
+# fora dele em dev), então sempre vencer é o comportamento certo aqui.
+load_dotenv(BASE_DIR / ".env", override=True)
 
 import os  # noqa: E402
 
@@ -256,10 +264,39 @@ FRONTEND_URL = env("FRONTEND_URL", "http://localhost:4200")
 # .env, cai pro console (dev) — nunca falha silenciosamente por falta de
 # config, só imprime o e-mail no terminal. Mesmo padrão do TMDB acima:
 # credenciais reais entram via .env quando existirem.
-EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+#
+# Resend (https://resend.com): API HTTP, não SMTP — RESEND_API_KEY no
+# .env troca o backend sozinho pro `ResendEmailBackend` (ver
+# shared/email/backends/resend_backend.py), sem precisar dos campos
+# EMAIL_HOST*/EMAIL_USE_TLS de SMTP, que só valem se algum dia trocar por
+# um provedor SMTP de verdade. Sem domínio verificado na Resend, o único
+# remetente que funciona é o de teste deles, `onboarding@resend.dev`
+# (por isso é o default de RESEND_FROM_EMAIL).
+RESEND_API_KEY = env("RESEND_API_KEY", "")
+RESEND_FROM_EMAIL = env("RESEND_FROM_EMAIL", "Cliched <onboarding@resend.dev>")
+
+# Quanto tempo o link de redefinição de senha continua válido depois de
+# enviado (usado por `django.contrib.auth.tokens.default_token_generator`,
+# que embute a idade do token no hash). Pedido explícito: 2h, bem mais
+# curto que o default do Django (3 dias) — link de e-mail é sensível,
+# quanto menor a janela, menor o risco se o e-mail vazar.
+PASSWORD_RESET_TIMEOUT = int(env("PASSWORD_RESET_TIMEOUT_SECONDS", 2 * 60 * 60))
+
+# Rate limit do pedido de redefinição de senha: no máximo 1 e-mail a cada
+# 30min por endereço (ver PasswordResetRequestView), evita alguém spamar
+# a caixa de entrada de terceiros usando o formulário de "esqueci minha
+# senha" como vetor de abuso.
+PASSWORD_RESET_COOLDOWN_SECONDS = int(env("PASSWORD_RESET_COOLDOWN_SECONDS", 30 * 60))
+
+if RESEND_API_KEY:
+    EMAIL_BACKEND = "shared.email.backends.resend_backend.ResendEmailBackend"
+else:
+    EMAIL_BACKEND = env(
+        "DJANGO_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+    )
 EMAIL_HOST = env("DJANGO_EMAIL_HOST", "")
 EMAIL_PORT = int(env("DJANGO_EMAIL_PORT", 587))
 EMAIL_HOST_USER = env("DJANGO_EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = env("DJANGO_EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = env_bool("DJANGO_EMAIL_USE_TLS", True)
-DEFAULT_FROM_EMAIL = env("DJANGO_DEFAULT_FROM_EMAIL", "Cliched <no-reply@cliched.app>")
+DEFAULT_FROM_EMAIL = env("DJANGO_DEFAULT_FROM_EMAIL", RESEND_FROM_EMAIL)
