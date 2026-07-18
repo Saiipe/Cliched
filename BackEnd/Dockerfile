@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel && pip install --n
 # copy project
 COPY src /app/src
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
-COPY .env /app/.env
+#COPY .env /app/.env
 
 RUN chmod +x /app/docker-entrypoint.sh
 
