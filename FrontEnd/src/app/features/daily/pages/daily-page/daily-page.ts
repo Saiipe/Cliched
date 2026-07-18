@@ -125,8 +125,8 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
               [class]="currentSession.image_source === 'backdrop' ? 'lg:grid-cols-1' : 'lg:grid-cols-[260px_1fr]'"
             >
               <div
-                class="w-full self-start overflow-hidden rounded-2xl border border-border bg-surface-elevated shadow-lg"
-                [class]="currentSession.image_source === 'backdrop' ? 'aspect-video' : 'aspect-[2/3]'"
+                class="w-full overflow-hidden rounded-2xl border border-border bg-surface-elevated shadow-lg"
+                [class]="posterWrapperClass(currentSession)"
               >
                 @if (posterUrl(); as posterSrcValue) {
                   <img
@@ -339,6 +339,19 @@ export class DailyPage implements OnInit {
     this.selectedMovie.set(null);
   }
 
+  /** Enquanto jogando, o pôster mantém a proporção original (2:3 ou 16:9),
+   * `self-start`: a coluna ao lado só tem o grid de estatísticas, bem mais
+   * curta. Quando o jogo termina, essa coluna ganha "Revelação" e
+   * "Próximo desafio em" (o card de Informações já saiu daqui, virou
+   * largura cheia embaixo), então o pôster estica (`self-stretch h-full`,
+   * sem proporção fixa) até acompanhar essa altura, terminando alinhado
+   * com o rodapé do card "Próximo desafio em". */
+  protected posterWrapperClass(session: DailyChallengeState): string {
+    if (session.status !== 'playing') {
+      return 'self-stretch h-full';
+    }
+    return session.image_source === 'backdrop' ? 'self-start aspect-video' : 'self-start aspect-[2/3]';
+  }
 
   protected recentFirst(session: DailyChallengeState): readonly DailyPreviousGuess[] {
     return session.previous_guesses.slice().reverse();

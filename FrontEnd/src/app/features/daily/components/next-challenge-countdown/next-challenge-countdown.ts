@@ -21,7 +21,7 @@ function formatDuration(ms: number): string {
   selector: 'app-next-challenge-countdown',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="rounded-2xl border border-border bg-bg p-4">
+    <div class="rounded-2xl border border-border bg-bg p-4 text-center">
       <p class="text-xs uppercase tracking-[0.18em] text-muted">Próximo desafio em</p>
       <p class="mt-2 text-2xl font-semibold tabular-nums text-foreground">{{ label() }}</p>
     </div>
