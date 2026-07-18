@@ -14,14 +14,16 @@ import { Header } from '../header/header';
     <div class="relative">
       <app-sparkle-field />
 
-      <app-header />
+      <div class="relative z-10">
+        <app-header />
 
-      <div class="flex min-h-[calc(100dvh-4rem)] flex-col">
-        <main class="flex-1 bg-bg text-foreground">
-          <router-outlet />
-        </main>
+        <div class="flex min-h-[calc(100dvh-4rem)] flex-col">
+          <main class="flex-1 bg-bg text-foreground">
+            <router-outlet />
+          </main>
 
-        <app-footer />
+          <app-footer />
+        </div>
       </div>
     </div>
 

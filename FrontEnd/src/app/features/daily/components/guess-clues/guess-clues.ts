@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { IconArrowDown, IconArrowUp } from '@tabler/icons-angular';
 
 import { Icon } from '../../../../shared/ui/icon/icon';
+import { countryFlag, countryName } from '../../../../shared/utils/country.util';
 import type { ClueResult, GuessClues } from '../../models/daily-session.model';
 
 interface ClueChip {
@@ -17,31 +18,6 @@ const CLUE_STYLES: Record<ClueResult, string> = {
   partial: 'border-warning/40 bg-warning/10 text-warning',
   wrong: 'border-error/30 bg-error/10 text-error',
 };
-
-const COUNTRY_NAMES = new Intl.DisplayNames(['pt-BR'], { type: 'region' });
-
-/** Código ISO 3166-1 alpha-2 (ex.: "US", "JP") vira emoji de bandeira: cada
- * letra corresponde a um "regional indicator symbol" do Unicode. */
-function countryFlag(code: string | null): string {
-  if (!code || code.length !== 2) {
-    return '';
-  }
-  const points = [...code.toUpperCase()].map((char) => 0x1f1e6 + char.charCodeAt(0) - 65);
-  return String.fromCodePoint(...points);
-}
-
-/** Nome do país em português a partir do código ISO, via API nativa do
- * navegador/Node (`Intl.DisplayNames`), sem precisar manter uma lista. */
-function countryName(code: string | null): string {
-  if (!code) {
-    return '-';
-  }
-  try {
-    return COUNTRY_NAMES.of(code.toUpperCase()) ?? code;
-  } catch {
-    return code;
-  }
-}
 
 @Component({
   selector: 'app-guess-clues',

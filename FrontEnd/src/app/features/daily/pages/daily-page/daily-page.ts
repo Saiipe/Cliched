@@ -1,6 +1,9 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Button } from '../../../../shared/ui/button/button';
+import type { RevealDetail } from '../../../../shared/ui/reveal-modal/reveal-modal';
+import { RevealModal } from '../../../../shared/ui/reveal-modal/reveal-modal';
+import { countryFlag, countryName } from '../../../../shared/utils/country.util';
 import { GuessCluesGrid } from '../../components/guess-clues/guess-clues';
 import { MovieAutocomplete } from '../../components/movie-autocomplete/movie-autocomplete';
 import { NextChallengeCountdown } from '../../components/next-challenge-countdown/next-challenge-countdown';
@@ -94,6 +97,7 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
     PreviousGuessCard,
     NextChallengeCountdown,
     NgTemplateOutlet,
+    RevealModal,
   ],
   template: `
     <section class="mx-auto max-w-6xl px-6 py-16">
@@ -252,6 +256,20 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
           </div>
         </aside>
       </div>
+
+      @if (session(); as currentSession) {
+        @if (currentSession.reveal; as reveal) {
+          <app-reveal-modal
+            [open]="modalOpen()"
+            [won]="currentSession.status === 'won'"
+            [title]="reveal.title"
+            [subtitle]="reveal.original_title + ' · ' + (reveal.release_year ?? '-')"
+            [posterUrl]="posterUrl() ?? ''"
+            [details]="revealDetails()"
+            (closed)="modalOpen.set(false)"
+          />
+        }
+      }
     </section>
   `,
 })
@@ -269,6 +287,40 @@ export class DailyPage implements OnInit {
    * null`; o jogador começa com 1000 pontos (`INITIAL_SCORE` no backend,
    * `apps/games/constants.py`), então mostra isso em vez de "-". */
   protected readonly initialScore = 1000;
+  protected readonly modalOpen = signal(false);
+
+  protected readonly revealDetails = computed<readonly RevealDetail[]>(() => {
+    const reveal = this.session()?.reveal;
+    if (!reveal) {
+      return [];
+    }
+    return [
+      { label: 'Ano', value: reveal.release_year?.toString() ?? '-' },
+      { label: 'Gêneros', value: reveal.genres.map((genre) => genre.name).join(', ') || '-' },
+      {
+        label: 'País',
+        value: `${countryFlag(reveal.origin_country)} ${countryName(reveal.origin_country)}`.trim(),
+      },
+      { label: 'Diretor', value: reveal.director ?? '-' },
+      { label: 'Elenco', value: reveal.top_cast.slice(0, 3).join(', ') || '-' },
+      { label: 'Duração', value: reveal.runtime ? `${reveal.runtime} min` : '-' },
+    ];
+  });
+
+  /** `null` até o primeiro `session()` chegar: usado só pra saber se o
+   * status *acabou de virar* won/lost (abre o modal sozinho) ou se a
+   * sessão já chegou terminada assim (reload de página com o jogo já
+   * concluído antes): nesse caso não deve reabrir o modal sozinho, só a
+   * pedido do jogador via "Ver detalhes". */
+  private previousStatus: SessionStatus | null = null;
+
+  private readonly openOnReveal = effect(() => {
+    const status = this.session()?.status ?? null;
+    if (status && this.previousStatus === 'playing' && status !== 'playing') {
+      this.modalOpen.set(true);
+    }
+    this.previousStatus = status;
+  });
 
   protected readonly statusLabel = computed(() => {
     const status = (this.session()?.status ?? 'playing') as SessionStatus;
@@ -322,6 +374,7 @@ export class DailyPage implements OnInit {
   }
 
   protected onNextChallenge(): void {
+    this.modalOpen.set(false);
     this.dailyGameService.loadSession();
   }
 

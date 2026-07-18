@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { IconChairDirector, IconUserQuestion } from '@tabler/icons-angular';
 
 import { Button } from '../../../../shared/ui/button/button';
 import { Icon } from '../../../../shared/ui/icon/icon';
+import type { RevealDetail } from '../../../../shared/ui/reveal-modal/reveal-modal';
+import { RevealModal } from '../../../../shared/ui/reveal-modal/reveal-modal';
 import { MovieAutocomplete } from '../../../daily/components/movie-autocomplete/movie-autocomplete';
 import { NextChallengeCountdown } from '../../../daily/components/next-challenge-countdown/next-challenge-countdown';
 import type { MovieSearchResult } from '../../../daily/models/daily-session.model';
@@ -28,7 +30,7 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
 @Component({
   selector: 'app-cast-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Button, Icon, MovieAutocomplete, NextChallengeCountdown],
+  imports: [Button, Icon, MovieAutocomplete, NextChallengeCountdown, RevealModal],
   template: `
     <section class="mx-auto max-w-6xl px-6 py-10 sm:py-16">
       <div class="grid gap-4 lg:grid-cols-[1.4fr_0.9fr]">
@@ -201,6 +203,20 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
           </div>
         </aside>
       </div>
+
+      @if (session(); as currentSession) {
+        @if (currentSession.reveal; as reveal) {
+          <app-reveal-modal
+            [open]="modalOpen()"
+            [won]="currentSession.status === 'won'"
+            [title]="reveal.title"
+            [subtitle]="reveal.original_title + ' · ' + (reveal.release_year ?? '-')"
+            [posterUrl]="reveal.poster_path ? posterUrl(reveal.poster_path) : ''"
+            [details]="revealDetails()"
+            (closed)="modalOpen.set(false)"
+          />
+        }
+      }
     </section>
   `,
 })
@@ -212,10 +228,37 @@ export class CastPage implements OnInit {
   protected readonly submitting = this.castGameService.submitting;
   protected readonly error = this.castGameService.error;
   protected readonly selectedMovie = signal<MovieSearchResult | null>(null);
+  protected readonly modalOpen = signal(false);
 
   protected readonly unknownIcon = IconUserQuestion;
   protected readonly directorIcon = IconChairDirector;
   protected readonly initialScore = 1000;
+
+  protected readonly revealDetails = computed<readonly RevealDetail[]>(() => {
+    const reveal = this.session()?.reveal;
+    if (!reveal) {
+      return [];
+    }
+    return [
+      { label: 'Ano', value: reveal.release_year?.toString() ?? '-' },
+      { label: 'Diretor', value: reveal.director ?? '-' },
+    ];
+  });
+
+  /** `null` até o primeiro `session()` chegar: usado só pra saber se o
+   * status *acabou de virar* won/lost (abre o modal sozinho) ou se a
+   * sessão já chegou terminada assim (reload de página com o jogo já
+   * concluído antes): nesse caso não deve reabrir o modal sozinho, só a
+   * pedido do jogador via "Ver detalhes". */
+  private previousStatus: SessionStatus | null = null;
+
+  private readonly openOnReveal = effect(() => {
+    const status = this.session()?.status ?? null;
+    if (status && this.previousStatus === 'playing' && status !== 'playing') {
+      this.modalOpen.set(true);
+    }
+    this.previousStatus = status;
+  });
 
   protected readonly statusLabel = computed(() => {
     const status = (this.session()?.status ?? 'playing') as SessionStatus;
@@ -243,6 +286,7 @@ export class CastPage implements OnInit {
   }
 
   protected onNextChallenge(): void {
+    this.modalOpen.set(false);
     this.castGameService.loadSession();
   }
 
