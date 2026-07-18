@@ -21,6 +21,11 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    // Mesmo motivo do diário: sessão via token anônimo do localStorage.
+    path: 'jogar/elenco',
+    renderMode: RenderMode.Client,
+  },
+  {
     // Todo o /admin exige sessão (adminGuard lê o token do localStorage,
     // que não existe em SSR/build), então precisa renderizar só no navegador.
     path: 'admin',
@@ -30,6 +35,11 @@ export const serverRoutes: ServerRoute[] = [
     // Mesmo motivo: consome a API admin ao carregar (e criaria o desafio de
     // amanhã em build-time se fosse pré-renderizada).
     path: 'admin/desafio-diario',
+    renderMode: RenderMode.Client,
+  },
+  {
+    // Mesmo motivo, versão do jogo de elenco.
+    path: 'admin/elenco',
     renderMode: RenderMode.Client,
   },
   {

@@ -64,6 +64,13 @@ export const routes: Routes = [
           ).then((m) => m.AdminDailyChallengePage),
       },
       {
+        path: 'elenco',
+        loadComponent: () =>
+          import('./features/admin/cast/pages/cast-admin-page/cast-admin-page').then(
+            (m) => m.CastAdminPage,
+          ),
+      },
+      {
         path: 'configuracoes',
         loadComponent: () =>
           import('./features/admin/settings/pages/settings-page/settings-page').then(
@@ -104,6 +111,13 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/daily/pages/daily-page/daily-page').then(
                 (m) => m.DailyPage,
+              ),
+          },
+          {
+            path: 'elenco',
+            loadComponent: () =>
+              import('./features/cast/pages/cast-page/cast-page').then(
+                (m) => m.CastPage,
               ),
           },
         ],

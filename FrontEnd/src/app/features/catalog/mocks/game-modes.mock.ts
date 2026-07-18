@@ -38,9 +38,9 @@ export const GAME_MODES_MOCK: readonly GameMode[] = [
   {
     id: 'cast',
     title: 'Elenco',
-    description: 'Descubra o filme a partir do elenco principal.',
+    description: 'Descubra o filme a partir do elenco principal e o diretor.',
     icon: IconUsers,
-    status: 'coming-soon',
+    status: 'available',
     route: '/jogar/elenco',
   },
   {

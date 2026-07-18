@@ -34,7 +34,12 @@ def tmdb_movie_payload(tmdb_id: int) -> dict:
         "credits": {
             "crew": [{"job": "Director", "name": f"Director {tmdb_id}"}],
             "cast": [
-                {"id": tmdb_id * 10 + i, "name": f"Actor {tmdb_id}-{i}", "order": i}
+                {
+                    "id": tmdb_id * 10 + i,
+                    "name": f"Actor {tmdb_id}-{i}",
+                    "order": i,
+                    "profile_path": f"/face-{tmdb_id}-{i}.jpg",
+                }
                 for i in range(5)
             ],
         },

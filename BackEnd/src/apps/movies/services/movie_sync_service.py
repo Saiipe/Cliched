@@ -24,6 +24,16 @@ class MovieSyncService:
         payload = self._tmdb.get_movie_with_credits(tmdb_id)
         return MovieRepository.create(**self._map_payload(payload))
 
+    def refresh_cast(self, movie: Movie) -> Movie:
+        """Re-fetch cast/director for movies synced before top_cast carried
+        profile_path; the cast game needs the actor photos."""
+        payload = self._tmdb.get_movie_with_credits(movie.tmdb_id)
+        mapped = self._map_payload(payload)
+        movie.top_cast = mapped["top_cast"]
+        movie.director = mapped["director"]
+        movie.save(update_fields=["top_cast", "director", "updated_at"])
+        return movie
+
     def refresh_media(self, movie: Movie) -> Movie:
         """Re-fetch just the artwork paths for an already-synced movie.
 
@@ -51,7 +61,15 @@ class MovieSyncService:
             "",
         )
         cast = sorted(credits.get("cast", []), key=lambda p: p.get("order", 999))
-        top_cast = [{"id": p["id"], "name": p["name"]} for p in cast[:TOP_CAST_N]]
+        top_cast = [
+            {
+                "id": p["id"],
+                "name": p["name"],
+                # Foto do rosto no CDN do TMDB; usada pelo jogo de elenco.
+                "profile_path": p.get("profile_path") or "",
+            }
+            for p in cast[:TOP_CAST_N]
+        ]
 
         return {
             "tmdb_id": payload["id"],

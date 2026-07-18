@@ -8,6 +8,12 @@ from apps.games.views.admin_views import (
     NextChallengeImageGalleryAdminView,
     SwapNextChallengeAdminView,
 )
+from apps.games.views.cast_admin_views import (
+    CurrentCastChallengeAdminView,
+    NextCastChallengeAdminView,
+    SwapNextCastChallengeAdminView,
+)
+from apps.games.views.cast_views import CastChallengeView, CastGuessView
 from apps.games.views.daily_views import (
     DailyChallengeView,
     DailyGuessView,
@@ -18,6 +24,11 @@ from apps.games.views.daily_views import (
 app_name = "games"
 
 urlpatterns = [
+    path("cast/", CastChallengeView.as_view(), name="cast"),
+    path("cast/guess/", CastGuessView.as_view(), name="cast-guess"),
+    path("cast/current/", CurrentCastChallengeAdminView.as_view(), name="cast-current"),
+    path("cast/next/", NextCastChallengeAdminView.as_view(), name="cast-next"),
+    path("cast/next/swap/", SwapNextCastChallengeAdminView.as_view(), name="cast-next-swap"),
     path("daily/", DailyChallengeView.as_view(), name="daily"),
     path("daily/guess/", DailyGuessView.as_view(), name="daily-guess"),
     path("daily/poster/", DailyPosterView.as_view(), name="daily-poster"),
