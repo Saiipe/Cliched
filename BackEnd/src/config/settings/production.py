@@ -1,8 +1,9 @@
 from .base import *  # noqa: F401,F403
+from .base import env_bool
 
 DEBUG = False
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", False)
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30
