@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
+import { resolveApiErrorMessage } from '../../../shared/utils/http-error-message.util';
 import type { ApiEnvelope } from '../../daily/models/daily-session.model';
 import { GAME_MODES_MOCK } from '../mocks/game-modes.mock';
 import type { GameMode } from '../models/game-mode.model';
@@ -84,7 +85,7 @@ export class CatalogService {
           this.scheduleToastDismissal();
         },
         error: (error: HttpErrorResponse) => {
-          this.errorState.set(error.error?.message ?? 'Não foi possível salvar os destaques.');
+          this.errorState.set(resolveApiErrorMessage(error, 'Não foi possível salvar os destaques.'));
           this.scheduleToastDismissal();
         },
       });

@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { finalize, map, Observable } from 'rxjs';
 
 import { environment } from '../../../../../environments/environment';
+import { resolveApiErrorMessage } from '../../../../shared/utils/http-error-message.util';
 import type {
   ApiEnvelope,
   MovieSearchResult,
@@ -168,6 +169,6 @@ export class AdminDailyChallengeService {
   }
 
   private messageOf(error: HttpErrorResponse): string {
-    return error.error?.message ?? 'Não foi possível falar com o servidor.';
+    return resolveApiErrorMessage(error, 'Não foi possível falar com o servidor.');
   }
 }

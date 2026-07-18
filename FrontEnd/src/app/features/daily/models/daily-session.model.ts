@@ -72,8 +72,8 @@ export interface DailyReveal {
   readonly title: string;
   readonly original_title: string;
   readonly release_year: number | null;
-  readonly genres: readonly string[];
-  readonly origin_country: readonly string[];
+  readonly genres: readonly GenreClueItem[];
+  readonly origin_country: string;
   readonly director: string | null;
   readonly top_cast: readonly string[];
   readonly runtime: number | null;

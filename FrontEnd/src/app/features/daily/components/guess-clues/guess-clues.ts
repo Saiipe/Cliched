@@ -9,6 +9,7 @@ interface ClueChip {
   readonly text: string;
   readonly result: ClueResult;
   readonly direction?: 'up' | 'down';
+  readonly emoji?: string;
 }
 
 const CLUE_STYLES: Record<ClueResult, string> = {
@@ -16,6 +17,31 @@ const CLUE_STYLES: Record<ClueResult, string> = {
   partial: 'border-warning/40 bg-warning/10 text-warning',
   wrong: 'border-error/30 bg-error/10 text-error',
 };
+
+const COUNTRY_NAMES = new Intl.DisplayNames(['pt-BR'], { type: 'region' });
+
+/** Código ISO 3166-1 alpha-2 (ex.: "US", "JP") vira emoji de bandeira: cada
+ * letra corresponde a um "regional indicator symbol" do Unicode. */
+function countryFlag(code: string | null): string {
+  if (!code || code.length !== 2) {
+    return '';
+  }
+  const points = [...code.toUpperCase()].map((char) => 0x1f1e6 + char.charCodeAt(0) - 65);
+  return String.fromCodePoint(...points);
+}
+
+/** Nome do país em português a partir do código ISO, via API nativa do
+ * navegador/Node (`Intl.DisplayNames`), sem precisar manter uma lista. */
+function countryName(code: string | null): string {
+  if (!code) {
+    return '-';
+  }
+  try {
+    return COUNTRY_NAMES.of(code.toUpperCase()) ?? code;
+  } catch {
+    return code;
+  }
+}
 
 @Component({
   selector: 'app-guess-clues',
@@ -26,7 +52,10 @@ const CLUE_STYLES: Record<ClueResult, string> = {
       @for (chip of chips(); track chip.label) {
         <div class="rounded-xl border px-3 py-2" [class]="clueStyles[chip.result]">
           <p class="text-[0.65rem] uppercase tracking-[0.16em] opacity-80">{{ chip.label }}</p>
-          <p class="mt-1 flex items-start gap-1 text-sm font-medium">
+          <p class="mt-1 flex items-start gap-1.5 text-sm font-medium">
+            @if (chip.emoji) {
+              <span class="text-xl leading-none">{{ chip.emoji }}</span>
+            }
             <span class="break-words">{{ chip.text }}</span>
             @if (chip.direction === 'up') {
               <app-icon [icon]="arrowUp" [size]="14" class="mt-0.5 shrink-0" />
@@ -62,7 +91,8 @@ export class GuessCluesGrid {
       },
       {
         label: 'País',
-        text: clues.country.value ?? '-',
+        text: countryName(clues.country.value),
+        emoji: countryFlag(clues.country.value),
         result: clues.country.result,
       },
       {

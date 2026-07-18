@@ -4,6 +4,7 @@ import { finalize, map, Observable } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { AnonSessionService } from '../../../core/services/anon-session.service';
+import { resolveApiErrorMessage } from '../../../shared/utils/http-error-message.util';
 import type {
   ApiEnvelope,
   DailyChallengeState,
@@ -136,6 +137,6 @@ export class DailyGameService {
   }
 
   private resolveErrorMessage(error: HttpErrorResponse): string {
-    return error.error?.message ?? 'Não foi possível carregar a sessão diária.';
+    return resolveApiErrorMessage(error, 'Não foi possível carregar a sessão diária.');
   }
 }

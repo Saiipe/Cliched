@@ -3,6 +3,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 
 import { environment } from '../../../../../environments/environment';
+import { resolveApiErrorMessage } from '../../../../shared/utils/http-error-message.util';
 import type { ApiEnvelope } from '../../../daily/models/daily-session.model';
 import type { AdminUser, LoginEvent } from '../models/admin-user.model';
 
@@ -64,6 +65,6 @@ export class AdminUserService {
   }
 
   private messageOf(error: HttpErrorResponse): string {
-    return error.error?.message ?? 'Não foi possível falar com o servidor.';
+    return resolveApiErrorMessage(error, 'Não foi possível falar com o servidor.');
   }
 }

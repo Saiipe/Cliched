@@ -7,6 +7,7 @@ import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { AnonSessionService } from '../../../core/services/anon-session.service';
 import { TokenStorageService } from '../../../core/services/token-storage.service';
+import { resolveApiErrorMessage } from '../../../shared/utils/http-error-message.util';
 import type { ApiEnvelope } from '../../daily/models/daily-session.model';
 import type {
   AuthPayload,
@@ -166,6 +167,9 @@ export class AuthService {
   }
 
   private messageOf(error: HttpErrorResponse): string {
+    if (error.status === 0) {
+      return resolveApiErrorMessage(error, 'Não foi possível falar com o servidor.');
+    }
     const body = error.error;
     if (body?.errors) {
       const first = Object.values(body.errors)[0];
@@ -173,6 +177,6 @@ export class AuthService {
         return first[0];
       }
     }
-    return body?.message ?? 'Não foi possível falar com o servidor.';
+    return resolveApiErrorMessage(error, 'Não foi possível falar com o servidor.');
   }
 }
