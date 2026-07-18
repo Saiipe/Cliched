@@ -1,6 +1,5 @@
 import {
   IconCalendarEvent,
-  IconChairDirector,
   IconFileText,
   IconInfinity,
   IconMask,
@@ -8,7 +7,6 @@ import {
   IconPhoto,
   IconQuotes,
   IconUsers,
-  IconUsersGroup,
 } from '@tabler/icons-angular';
 import type { GameMode } from '../models/game-mode.model';
 
@@ -62,14 +60,6 @@ export const GAME_MODES_MOCK: readonly GameMode[] = [
     route: '/jogar/personagem',
   },
   {
-    id: 'director',
-    title: 'Diretor',
-    description: 'Descubra o filme a partir da filmografia do diretor.',
-    icon: IconChairDirector,
-    status: 'coming-soon',
-    route: '/jogar/diretor',
-  },
-  {
     id: 'daily',
     title: 'Desafio Diário',
     description: 'Um desafio novo por dia, igual pra todo mundo.',
@@ -84,13 +74,5 @@ export const GAME_MODES_MOCK: readonly GameMode[] = [
     icon: IconInfinity,
     status: 'coming-soon',
     route: '/jogar/infinito',
-  },
-  {
-    id: 'multiplayer',
-    title: 'Multiplayer',
-    description: 'Desafie amigos em tempo real e veja quem acerta primeiro.',
-    icon: IconUsersGroup,
-    status: 'coming-soon',
-    route: '/jogar/multiplayer',
   },
 ];
