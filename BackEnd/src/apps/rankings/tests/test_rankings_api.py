@@ -123,3 +123,15 @@ class RankingsApiTests(APITestCase):
             self.assertLessEqual(player["monthly_streak"], 30, name)
             self.assertLessEqual(player["weekly_streak"], player["monthly_streak"], name)
             self.assertLessEqual(player["monthly_streak"], player["best_streak"], name)
+
+    def test_mock_points_are_achievable_scores(self):
+        # Cada sessão vencida vale INITIAL_SCORE menos um múltiplo de
+        # WRONG_GUESS_PENALTY (ambos 100 em 100, ver apps.games.constants):
+        # qualquer soma dessas parcelas é múltipla de 100. Um mock com
+        # pontuação fora disso (ex.: 12840, 950) seria impossível de um
+        # jogador de verdade alcançar.
+        for player in MOCK_PLAYERS:
+            name = player["display_name"]
+            self.assertEqual(player["weekly_points"] % 100, 0, name)
+            self.assertEqual(player["monthly_points"] % 100, 0, name)
+            self.assertEqual(player["total_points"] % 100, 0, name)
