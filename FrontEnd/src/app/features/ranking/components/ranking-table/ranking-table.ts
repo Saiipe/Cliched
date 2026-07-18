@@ -16,20 +16,21 @@ const MEDAL_CLASS_BY_POSITION: Record<number, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon, Tooltip],
   template: `
-    <div class="overflow-x-auto scroll-smooth rounded-2xl border border-border">
-      <table class="w-full min-w-[720px] border-collapse text-left">
+    <div class="rounded-2xl border border-border">
+      <table class="w-full border-collapse text-left">
         <thead>
-          <tr class="border-b border-border text-xs uppercase text-muted">
-            <th scope="col" class="px-3 py-3 font-medium sm:px-6">#</th>
-            <th scope="col" class="px-3 py-3 font-medium sm:px-6">Jogador</th>
-            <th scope="col" class="px-3 py-3 text-right font-medium sm:px-6">Pontos</th>
-            <th scope="col" class="hidden px-3 py-3 text-right font-medium sm:table-cell sm:px-6">
+          <tr class="border-b border-border text-[0.65rem] uppercase text-muted sm:text-xs">
+            <th scope="col" class="px-2 py-2.5 font-medium sm:px-6 sm:py-3">#</th>
+            <th scope="col" class="px-2 py-2.5 font-medium sm:px-6 sm:py-3">Jogador</th>
+            <th scope="col" class="px-2 py-2.5 text-right font-medium sm:px-6 sm:py-3">Pontos</th>
+            <th scope="col" class="px-1.5 py-2.5 text-right font-medium sm:px-6 sm:py-3">
               <div class="flex justify-end">
                 <app-tooltip
                   text="Sequência é a quantidade de vitórias em dias seguidos no desafio diário. Quando várias pessoas empatam na maior sequência, o fogo delas fica aceso."
                 >
-                  <span class="inline-flex items-center gap-1.5">
-                    Sequência
+                  <span class="inline-flex items-center gap-1">
+                    <span class="hidden sm:inline">Sequência</span>
+                    <app-icon [icon]="flameIcon" [size]="13" class="text-muted sm:hidden" />
                     <app-icon [icon]="infoIcon" [size]="14" class="text-muted" />
                   </span>
                 </app-tooltip>
@@ -39,29 +40,33 @@ const MEDAL_CLASS_BY_POSITION: Record<number, string> = {
         </thead>
         <tbody>
           @for (entry of entries(); track entry.position) {
-            <tr class="border-b border-border text-sm transition-colors last:border-0 hover:bg-surface-elevated">
-              <td class="px-3 py-4 text-foreground sm:px-6">
-                <span class="inline-flex items-center gap-1.5" [class]="medalClass(entry.position)">
+            <tr class="border-b border-border text-xs transition-colors last:border-0 hover:bg-surface-elevated sm:text-sm">
+              <td class="px-2 py-2.5 text-foreground sm:px-6 sm:py-4">
+                <span class="inline-flex items-center gap-1 sm:gap-1.5" [class]="medalClass(entry.position)">
                   @if (entry.position <= 3) {
-                    <app-icon [icon]="trophyIcon" [size]="14" />
+                    <app-icon [icon]="trophyIcon" [size]="13" />
                   }
                   {{ entry.position }}
                 </span>
               </td>
-              <td class="px-3 py-4 sm:px-6">
-                <span [class]="medalClass(entry.position) || 'text-foreground'">{{ entry.player_name }}</span>
+              <td class="max-w-0 px-2 py-2.5 sm:max-w-none sm:px-6 sm:py-4">
+                <span
+                  class="block truncate"
+                  [class]="medalClass(entry.position) || 'text-foreground'"
+                  >{{ entry.player_name }}</span
+                >
               </td>
-              <td class="px-3 py-4 text-right text-foreground sm:px-6">
+              <td class="px-2 py-2.5 text-right text-foreground sm:px-6 sm:py-4">
                 {{ formatPoints(entry.points) }}
               </td>
               <td
-                class="hidden px-3 py-4 text-right sm:table-cell sm:px-6"
+                class="px-1.5 py-2.5 text-right sm:px-6 sm:py-4"
                 [class]="isTopStreak(entry) ? 'text-secondary' : 'text-muted'"
               >
-                <span class="inline-flex items-center justify-end gap-1.5">
+                <span class="inline-flex items-center justify-end gap-1 sm:gap-1.5">
                   <app-icon
                     [icon]="flameIcon"
-                    [size]="14"
+                    [size]="13"
                     [class]="isTopStreak(entry) ? 'text-secondary' : 'text-muted'"
                   />
                   {{ entry.streak }}
