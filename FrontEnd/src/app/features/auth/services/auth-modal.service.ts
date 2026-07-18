@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
-export type AuthModalMode = 'login' | 'register';
+export type AuthModalMode = 'login' | 'register' | 'forgot';
 
 @Injectable({ providedIn: 'root' })
 export class AuthModalService {

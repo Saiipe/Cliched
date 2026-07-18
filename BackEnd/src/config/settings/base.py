@@ -247,3 +247,19 @@ TMDB_READ_ACCESS_TOKEN = env("TMDB_READ_ACCESS_TOKEN", "")
 TMDB_BASE_URL = env("TMDB_BASE_URL", "https://api.themoviedb.org/3")
 # TMDB's own limit floats around 40 req/s; stay comfortably under it.
 TMDB_MAX_REQUESTS_PER_SECOND = float(env("TMDB_MAX_REQUESTS_PER_SECOND", 40))
+
+# URL do frontend Angular, usada pra montar o link de redefinição de senha
+# enviado por e-mail (o backend não tem rota própria pra essa tela).
+FRONTEND_URL = env("FRONTEND_URL", "http://localhost:4200")
+
+# E-mail transacional (hoje só redefinição de senha). Sem credenciais no
+# .env, cai pro console (dev) — nunca falha silenciosamente por falta de
+# config, só imprime o e-mail no terminal. Mesmo padrão do TMDB acima:
+# credenciais reais entram via .env quando existirem.
+EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = env("DJANGO_EMAIL_HOST", "")
+EMAIL_PORT = int(env("DJANGO_EMAIL_PORT", 587))
+EMAIL_HOST_USER = env("DJANGO_EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = env("DJANGO_EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = env_bool("DJANGO_EMAIL_USE_TLS", True)
+DEFAULT_FROM_EMAIL = env("DJANGO_DEFAULT_FROM_EMAIL", "Cliched <no-reply@cliched.app>")

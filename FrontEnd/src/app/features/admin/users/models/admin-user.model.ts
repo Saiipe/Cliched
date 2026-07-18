@@ -8,7 +8,8 @@ export interface AdminUser {
   readonly date_joined: string;
   readonly last_login: string | null;
   readonly total_wins: number;
-  readonly rank_position: number;
+  readonly current_streak: number;
+  readonly best_streak: number;
 }
 
 export interface LoginEvent {

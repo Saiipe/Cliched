@@ -1,7 +1,9 @@
 import uuid
 from datetime import timedelta
+from urllib.parse import parse_qs, urlparse
 
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
@@ -23,9 +25,9 @@ class AuthAPITests(APITestCase):
         payload.update(overrides)
         return self.client.post("/api/v1/auth/register/", payload)
 
-    def login(self, identifier="player", password="senha-forte-123"):
+    def login(self, email="player@example.com", password="senha-forte-123"):
         return self.client.post(
-            "/api/v1/auth/login/", {"identifier": identifier, "password": password}
+            "/api/v1/auth/login/", {"email": email, "password": password}
         )
 
     def test_register_creates_user_and_returns_tokens(self):
@@ -152,7 +154,7 @@ class AuthAPITests(APITestCase):
         self.assertFalse(user.is_superuser)
         self.assertFalse(user.is_premium)
 
-    def test_login_with_username(self):
+    def test_login_with_email(self):
         self.register()
         response = self.login()
         self.assertEqual(response.status_code, 200)
@@ -160,14 +162,28 @@ class AuthAPITests(APITestCase):
         self.assertIn("access", data["tokens"])
         self.assertEqual(data["user"]["username"], "player")
 
-    def test_login_with_email(self):
+    def test_login_is_case_insensitive_on_email(self):
         self.register()
-        response = self.login(identifier="player@example.com")
+        response = self.login(email="PLAYER@EXAMPLE.COM")
         self.assertEqual(response.status_code, 200)
+
+    def test_login_rejects_username_instead_of_email(self):
+        self.register()
+        response = self.login(email="player")
+        self.assertEqual(response.status_code, 401)
 
     def test_login_wrong_password(self):
         self.register()
         response = self.login(password="errada")
+        self.assertEqual(response.status_code, 401)
+
+    def test_login_rejects_inactive_user(self):
+        self.register()
+        user = User.objects.get(username="player")
+        user.is_active = False
+        user.save(update_fields=["is_active"])
+
+        response = self.login()
         self.assertEqual(response.status_code, 401)
 
     def test_refresh(self):
@@ -244,6 +260,110 @@ class AuthAPITests(APITestCase):
         self.assertEqual(response.status_code, 401)
 
 
+class PasswordResetTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="player", email="player@example.com", password="senha-forte-123"
+        )
+
+    def _request_reset(self, email="player@example.com"):
+        return self.client.post("/api/v1/auth/password-reset/", {"email": email})
+
+    def _extract_link(self, mail_body: str) -> str:
+        return next(line for line in mail_body.splitlines() if line.startswith("http"))
+
+    def test_request_reset_sends_email_for_existing_user(self):
+        response = self._request_reset()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn(self.user.email, mail.outbox[0].to)
+
+    def test_request_reset_is_case_insensitive(self):
+        response = self._request_reset(email="PLAYER@EXAMPLE.COM")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_request_reset_same_response_for_unknown_email(self):
+        known = self._request_reset()
+        mail.outbox.clear()
+        unknown = self._request_reset(email="ninguem@example.com")
+
+        self.assertEqual(known.status_code, unknown.status_code)
+        self.assertEqual(known.json()["message"], unknown.json()["message"])
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_confirm_reset_changes_password(self):
+        self._request_reset()
+        link = self._extract_link(mail.outbox[0].body)
+        query = parse_qs(urlparse(link).query)
+
+        response = self.client.post(
+            "/api/v1/auth/password-reset/confirm/",
+            {
+                "uid": query["uid"][0],
+                "token": query["token"][0],
+                "new_password": "nova-senha-forte-456",
+                "new_password_confirm": "nova-senha-forte-456",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        login = self.client.post(
+            "/api/v1/auth/login/",
+            {"email": "player@example.com", "password": "nova-senha-forte-456"},
+        )
+        self.assertEqual(login.status_code, 200)
+
+    def test_confirm_reset_rejects_invalid_token(self):
+        self._request_reset()
+        link = self._extract_link(mail.outbox[0].body)
+        query = parse_qs(urlparse(link).query)
+
+        response = self.client.post(
+            "/api/v1/auth/password-reset/confirm/",
+            {
+                "uid": query["uid"][0],
+                "token": "token-invalido",
+                "new_password": "nova-senha-forte-456",
+                "new_password_confirm": "nova-senha-forte-456",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_confirm_reset_rejects_password_mismatch(self):
+        self._request_reset()
+        link = self._extract_link(mail.outbox[0].body)
+        query = parse_qs(urlparse(link).query)
+
+        response = self.client.post(
+            "/api/v1/auth/password-reset/confirm/",
+            {
+                "uid": query["uid"][0],
+                "token": query["token"][0],
+                "new_password": "nova-senha-forte-456",
+                "new_password_confirm": "outra-coisa-789",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_confirm_reset_token_is_single_use(self):
+        self._request_reset()
+        link = self._extract_link(mail.outbox[0].body)
+        query = parse_qs(urlparse(link).query)
+        payload = {
+            "uid": query["uid"][0],
+            "token": query["token"][0],
+            "new_password": "nova-senha-forte-456",
+            "new_password_confirm": "nova-senha-forte-456",
+        }
+
+        first = self.client.post("/api/v1/auth/password-reset/confirm/", payload)
+        self.assertEqual(first.status_code, 200)
+
+        second = self.client.post("/api/v1/auth/password-reset/confirm/", payload)
+        self.assertEqual(second.status_code, 400)
+
+
 class AnonAdoptionAndStreakTests(APITestCase):
     """Login adota a sessão anônima do dia, e /me contabiliza a sequência."""
 
@@ -264,7 +384,7 @@ class AnonAdoptionAndStreakTests(APITestCase):
         headers = {"X-Anon-Token": str(anon_token)} if anon_token else {}
         return self.client.post(
             "/api/v1/auth/login/",
-            {"identifier": "player", "password": "senha-forte-123"},
+            {"email": "player@example.com", "password": "senha-forte-123"},
             headers=headers,
         )
 

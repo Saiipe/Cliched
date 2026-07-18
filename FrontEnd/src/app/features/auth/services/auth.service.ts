@@ -13,6 +13,7 @@ import type {
   AuthPayload,
   ChangePasswordRequest,
   MePayload,
+  PasswordResetConfirmRequest,
   RegisterRequest,
   UserProfile,
   UserStats,
@@ -64,12 +65,12 @@ export class AuthService {
       );
   }
 
-  login(identifier: string, password: string): void {
+  login(email: string, password: string): void {
     this.beginRequest();
     this.http
       .post<ApiEnvelope<AuthPayload>>(
         this.buildUrl('auth/login/'),
-        { identifier, password },
+        { email, password },
         // O token anônimo vai junto pro backend adotar o progresso da conta.
         { headers: this.anonSession.headers() },
       )
@@ -78,6 +79,34 @@ export class AuthService {
         next: (response) => this.onAuthenticated(response.data),
         error: (error: HttpErrorResponse) => this.errorState.set(this.messageOf(error)),
       });
+  }
+
+  requestPasswordReset(email: string): void {
+    this.beginRequest();
+    this.http
+      .post<ApiEnvelope<null>>(this.buildUrl('auth/password-reset/'), { email })
+      .pipe(finalize(() => this.submittingState.set(false)))
+      .subscribe({
+        next: (response) =>
+          this.noticeState.set(
+            response.message || 'Se o e-mail existir, enviamos um link de redefinição.',
+          ),
+        error: (error: HttpErrorResponse) => this.errorState.set(this.messageOf(error)),
+      });
+  }
+
+  /** Observable puro (não mexe em submitting/error globais): a página de
+   * redefinição tem seu próprio estado de sucesso/falha, mais adequado a
+   * uma tela cheia do que ao par de signals do modal. */
+  confirmPasswordReset(request: PasswordResetConfirmRequest): Observable<string> {
+    return this.http
+      .post<ApiEnvelope<null>>(this.buildUrl('auth/password-reset/confirm/'), request)
+      .pipe(
+        map((response) => response.message || 'Senha redefinida com sucesso.'),
+        catchError((error: HttpErrorResponse) => {
+          throw new Error(this.messageOf(error));
+        }),
+      );
   }
 
   register(request: RegisterRequest): void {

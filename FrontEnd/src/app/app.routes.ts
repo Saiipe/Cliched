@@ -130,6 +130,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'redefinir-senha',
+        loadComponent: () =>
+          import('./features/auth/pages/reset-password-page/reset-password-page').then(
+            (m) => m.ResetPasswordPage,
+          ),
+      },
+      {
         path: 'sobre',
         loadComponent: () =>
           import('./features/about/pages/about-page/about-page').then((m) => m.AboutPage),

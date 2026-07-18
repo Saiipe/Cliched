@@ -1,30 +1,27 @@
-from datetime import timedelta
-
 from django.utils import timezone
 
 from apps.games.models import GameSession
+from shared.services.streak_calculator import best_streak, current_streak
 
 
 class StreakService:
-    """Sequência de dias consecutivos em que o usuário venceu o desafio
-    diário. Se o desafio de hoje ainda não foi vencido, a sequência que
-    terminou ontem continua valendo (ainda dá tempo de mantê-la hoje)."""
+    """Sequências de dias consecutivos em que o usuário venceu o desafio
+    diário. A matemática fica em `shared.services.streak_calculator`,
+    compartilhada com o ranking; aqui só se busca as datas no banco."""
 
     @staticmethod
-    def current_streak(user) -> int:
-        won_dates = set(
+    def _won_dates(user) -> set:
+        return set(
             GameSession.objects.filter(
                 user=user, status=GameSession.Status.WON
             ).values_list("challenge__date", flat=True)
         )
-        if not won_dates:
-            return 0
 
-        today = timezone.localdate()
-        day = today if today in won_dates else today - timedelta(days=1)
+    @staticmethod
+    def current_streak(user) -> int:
+        return current_streak(StreakService._won_dates(user), timezone.localdate())
 
-        streak = 0
-        while day in won_dates:
-            streak += 1
-            day -= timedelta(days=1)
-        return streak
+    @staticmethod
+    def best_streak(user) -> int:
+        length, _ = best_streak(StreakService._won_dates(user))
+        return length

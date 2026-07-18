@@ -29,6 +29,7 @@ ADMIN_ONLY_ROUTES = [
     ("post", "/api/v1/common/featured-game-modes/", {"game_mode_ids": []}),
     ("get", "/api/v1/users/admin/", None),
     ("get", "/api/v1/users/admin/999999/logins/", None),
+    ("post", "/api/v1/users/admin/999999/toggle-active/", {}),
 ]
 
 

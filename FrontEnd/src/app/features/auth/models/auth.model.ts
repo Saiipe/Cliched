@@ -40,3 +40,10 @@ export interface ChangePasswordRequest {
   readonly new_password: string;
   readonly new_password_confirm: string;
 }
+
+export interface PasswordResetConfirmRequest {
+  readonly uid: string;
+  readonly token: string;
+  readonly new_password: string;
+  readonly new_password_confirm: string;
+}

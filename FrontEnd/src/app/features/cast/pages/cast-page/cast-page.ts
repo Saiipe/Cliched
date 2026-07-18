@@ -187,7 +187,7 @@ const STATUS_STYLES: Record<SessionStatus, string> = {
               @if (session(); as currentSession) {
                 @for (guess of recentFirst(); track $index) {
                   <div class="flex items-center justify-between gap-3 rounded-2xl border border-border bg-bg px-4 py-3">
-                    <p class="truncate text-sm font-medium text-foreground">{{ guess.title }}</p>
+                    <p class="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{{ guess.title }}</p>
                     <span
                       class="shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] font-medium"
                       [class]="guess.is_correct ? 'bg-success/10 text-success' : 'bg-error/10 text-error'"

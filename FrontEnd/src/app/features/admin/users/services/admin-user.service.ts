@@ -40,6 +40,23 @@ export class AdminUserService {
       });
   }
 
+  toggleActive(userId: number): void {
+    this.http
+      .post<ApiEnvelope<{ id: number; is_active: boolean }>>(
+        this.buildUrl(`users/admin/${userId}/toggle-active/`),
+        {},
+      )
+      .subscribe({
+        next: (response) => {
+          const { is_active } = response.data;
+          this.usersState.update((users) =>
+            users.map((user) => (user.id === userId ? { ...user, is_active } : user)),
+          );
+        },
+        error: (error: HttpErrorResponse) => this.errorState.set(this.messageOf(error)),
+      });
+  }
+
   toggleLoginHistory(userId: number): void {
     if (this.loginHistoryUserIdState() === userId) {
       this.loginHistoryUserIdState.set(null);

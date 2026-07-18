@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { IconChevronDown, IconTrophy, IconUsers } from '@tabler/icons-angular';
+import { IconBan, IconChevronDown, IconFlame, IconRotateClockwise2, IconTrophy, IconUsers } from '@tabler/icons-angular';
 
+import { AuthService } from '../../../../auth/services/auth.service';
 import { Badge } from '../../../../../shared/ui/badge/badge';
 import { Icon } from '../../../../../shared/ui/icon/icon';
 import { AdminUserService } from '../../services/admin-user.service';
@@ -20,7 +21,7 @@ import { AdminUserService } from '../../services/admin-user.service';
     <section class="mx-auto max-w-6xl px-6 py-10">
       <h1 class="text-3xl font-bold text-foreground">Usuários</h1>
       <p class="mt-1 text-muted">
-        Último acesso, histórico de login e posição por total de vitórias no desafio diário.
+        Último acesso, histórico de login, vitórias e sequências no desafio diário.
       </p>
 
       @if (service.loading()) {
@@ -40,10 +41,23 @@ import { AdminUserService } from '../../services/admin-user.service';
                 <th class="px-4 py-3 font-medium">
                   <span class="inline-flex items-center gap-1">
                     <app-icon [icon]="trophyIcon" [size]="14" />
-                    Posição
+                    Vitórias
+                  </span>
+                </th>
+                <th class="px-4 py-3 font-medium">
+                  <span class="inline-flex items-center gap-1">
+                    <app-icon [icon]="flameIcon" [size]="14" />
+                    Sequência atual
+                  </span>
+                </th>
+                <th class="px-4 py-3 font-medium">
+                  <span class="inline-flex items-center gap-1">
+                    <app-icon [icon]="flameIcon" [size]="14" />
+                    Melhor sequência
                   </span>
                 </th>
                 <th class="px-4 py-3 font-medium"></th>
+                <th class="px-4 py-3 font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -68,9 +82,12 @@ import { AdminUserService } from '../../services/admin-user.service';
                   <td class="px-4 py-3 text-muted">
                     {{ user.last_login ? formatDate(user.last_login) : 'Nunca acessou' }}
                   </td>
+                  <td class="px-4 py-3 text-muted">{{ user.total_wins }}</td>
                   <td class="px-4 py-3 text-muted">
-                    #{{ user.rank_position }} · {{ user.total_wins }}
-                    {{ user.total_wins === 1 ? 'vitória' : 'vitórias' }}
+                    {{ user.current_streak }} {{ user.current_streak === 1 ? 'dia' : 'dias' }}
+                  </td>
+                  <td class="px-4 py-3 text-muted">
+                    {{ user.best_streak }} {{ user.best_streak === 1 ? 'dia' : 'dias' }}
                   </td>
                   <td class="px-4 py-3">
                     <button
@@ -87,10 +104,29 @@ import { AdminUserService } from '../../services/admin-user.service';
                       />
                     </button>
                   </td>
+                  <td class="px-4 py-3">
+                    @if (user.id !== currentUserId()) {
+                      <button
+                        type="button"
+                        class="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors"
+                        [class]="
+                          user.is_active
+                            ? 'border-error/30 text-error hover:bg-error/10'
+                            : 'border-success/30 text-success hover:bg-success/10'
+                        "
+                        (click)="toggleActive(user.id)"
+                      >
+                        <app-icon [icon]="user.is_active ? banIcon : restoreIcon" [size]="14" />
+                        {{ user.is_active ? 'Inativar' : 'Ativar' }}
+                      </button>
+                    } @else {
+                      <span class="text-xs text-muted">Você</span>
+                    }
+                  </td>
                 </tr>
                 @if (service.loginHistoryUserId() === user.id) {
                   <tr class="border-b border-border bg-bg/50 last:border-0">
-                    <td colspan="7" class="px-4 py-3">
+                    <td colspan="10" class="px-4 py-3">
                       @if (service.loginHistoryLoading()) {
                         <p class="text-xs text-muted">Carregando histórico...</p>
                       } @else if (service.loginHistory().length === 0) {
@@ -112,7 +148,7 @@ import { AdminUserService } from '../../services/admin-user.service';
                 }
               } @empty {
                 <tr>
-                  <td colspan="7" class="px-4 py-6 text-center text-muted">
+                  <td colspan="10" class="px-4 py-6 text-center text-muted">
                     Nenhum usuário cadastrado ainda.
                   </td>
                 </tr>
@@ -126,10 +162,16 @@ import { AdminUserService } from '../../services/admin-user.service';
 })
 export class AdminUsersPage implements OnInit {
   protected readonly service = inject(AdminUserService);
+  private readonly authService = inject(AuthService);
 
   protected readonly usersIcon = IconUsers;
   protected readonly trophyIcon = IconTrophy;
+  protected readonly flameIcon = IconFlame;
   protected readonly chevronIcon = IconChevronDown;
+  protected readonly banIcon = IconBan;
+  protected readonly restoreIcon = IconRotateClockwise2;
+
+  protected readonly currentUserId = () => this.authService.user()?.id ?? null;
 
   ngOnInit(): void {
     this.service.loadUsers();
@@ -137,6 +179,10 @@ export class AdminUsersPage implements OnInit {
 
   protected toggleHistory(userId: number): void {
     this.service.toggleLoginHistory(userId);
+  }
+
+  protected toggleActive(userId: number): void {
+    this.service.toggleActive(userId);
   }
 
   protected formatDate(value: string): string {
