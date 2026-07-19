@@ -312,7 +312,7 @@ export class AuthModal {
   protected readonly registerForm = this.formBuilder.nonNullable.group({
     username: [
       '',
-      [Validators.required, Validators.minLength(6)],
+      [Validators.required, Validators.minLength(5)],
       [usernameAvailableValidator(this.authService)],
     ],
     email: ['', [Validators.required, Validators.email]],

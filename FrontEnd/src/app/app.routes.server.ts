@@ -2,17 +2,8 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
   {
-    // Trocado de RenderMode.Server pra Prerender em 2026-07-18: o
-    // deploy no Vercel não estava rodando o servidor Node do Angular
-    // SSR por requisição (Angular muito recente pro preset deles,
-    // aparentemente), então a Home (rota '') dava 404 puro em
-    // produção. Trade-off aceito conscientemente: os destaques
-    // configurados no admin agora só atualizam na Home depois de um
-    // novo deploy, não instantaneamente — mas o site funciona de
-    // verdade, que é o que importa. Se o suporte SSR do Vercel
-    // amadurecer, dá pra reverter pra Server.
     path: '',
-    renderMode: RenderMode.Prerender,
+    renderMode: RenderMode.Server,
   },
   {
     // Sessão do desafio diário depende do token anônimo salvo no localStorage

@@ -2,6 +2,15 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Precisa carregar o .env AQUI, antes do setdefault abaixo: o Django resolve
+# qual módulo de settings importar assim que DJANGO_SETTINGS_MODULE existe no
+# ambiente, e o load_dotenv() de config/settings/base.py só roda depois que
+# esse módulo já foi escolhido e importado — tarde demais pra mudar a decisão.
+load_dotenv(Path(__file__).resolve().parent.parent / ".env", override=True)
 
 
 def main():

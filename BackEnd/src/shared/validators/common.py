@@ -13,7 +13,7 @@ def validate_positive(value):
 # do front). Sem espaço, aspas, `<`/`>`, `;`, `\`, `&`, `%`, `/`: só
 # letras, números e uma pontuação segura e comum em nicknames
 # (ex.: "T4uan", "Jjuli$", "joab?!").
-USERNAME_MIN_LENGTH = 6
+USERNAME_MIN_LENGTH = 5
 _USERNAME_ALLOWED_CHARS = re.compile(r"^[A-Za-z0-9_.$!?-]+$")
 
 
