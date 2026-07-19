@@ -1,0 +1,33 @@
+services:
+  backend:
+    build: ./BackEnd
+    container_name: cliched-backend
+    restart: unless-stopped
+    env_file:
+      - ./BackEnd/.env
+    ports:
+      - "127.0.0.1:8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - backend_media:/app/media
+    networks:
+      - cliched-network
+
+  frontend:
+    build: ./FrontEnd
+    container_name: cliched-frontend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4000:4000"
+    depends_on:
+      - backend
+    networks:
+      - cliched-network
+
+networks:
+  cliched-network:
+    driver: bridge
+
+volumes:
+  backend_media:
