@@ -60,19 +60,23 @@ export const LEGAL_CONTENT: Readonly<Record<LegalPageType, LegalContent>> = {
     title: 'Política de Cookies',
     updatedAt: 'julho de 2026',
     intro:
-      'O Cliched usa hoje armazenamento local do navegador, não cookies de rastreamento publicitário.',
+      'O Cliched usa armazenamento local essencial ao funcionamento do site, e, só com sua permissão, cookies e scripts de métricas e anúncios de terceiros.',
     sections: [
       {
-        heading: 'Armazenamento local (localStorage)',
-        body: 'Usamos o localStorage do seu navegador para guardar o token da sua sessão anônima do desafio diário e a preferência de tema (claro/escuro). Esses dados ficam só no seu aparelho e não são enviados a terceiros.',
+        heading: 'Armazenamento local essencial (localStorage)',
+        body: 'Usamos o localStorage do seu navegador para guardar o token da sua sessão anônima do desafio diário, a preferência de tema (claro/escuro) e a sua escolha no banner de cookies. Esses dados ficam só no seu aparelho, não exigem consentimento (são estritamente necessários) e não são enviados a terceiros.',
       },
       {
-        heading: 'Cookies de terceiros',
-        body: 'Hoje não usamos cookies de publicidade ou rastreamento de terceiros. Se anúncios forem introduzidos no futuro, esta página será atualizada antes disso acontecer.',
+        heading: 'Métricas de uso (Microsoft Clarity)',
+        body: 'Com sua permissão (banner de cookies), usamos o Microsoft Clarity pra entender como as pessoas navegam pelo site (cliques, rolagem, tempo de sessão) e melhorar a experiência. O script só é carregado depois que você aceita; recusar não limita nenhuma funcionalidade do jogo.',
       },
       {
-        heading: 'Como limpar esses dados',
-        body: 'Limpar os dados de navegação/localStorage do seu navegador para este site apaga sua sessão anônima local: sua sequência no desafio diário desse aparelho será reiniciada.',
+        heading: 'Anúncios (Google AdSense)',
+        body: 'Exibimos anúncios via Google AdSense, que pode usar cookies para personalização. Você pode gerenciar suas preferências de anúncios personalizados diretamente nas configurações de anúncios do Google.',
+      },
+      {
+        heading: 'Como mudar sua escolha',
+        body: 'Sua decisão no banner de cookies fica salva neste aparelho. Pra mudar de ideia, limpe os dados de navegação/localStorage do site nas configurações do seu navegador — o banner volta a aparecer na próxima visita. Limpar esses dados também apaga sua sessão anônima local (sua sequência no desafio diário desse aparelho será reiniciada).',
       },
     ],
   },
