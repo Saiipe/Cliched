@@ -3,6 +3,7 @@ from datetime import date, datetime
 from django.core.cache import cache
 
 from apps.rankings.dtos.ranking_entry import RankingEntryDTO
+from apps.rankings.models import RankingSettings
 from apps.rankings.repositories.mock_player_repository import MockPlayerRepository
 from apps.rankings.repositories.real_player_repository import RealPlayerRepository
 from apps.rankings.utils.periods import VALID_PERIODS, period_start
@@ -69,7 +70,8 @@ class RankingService:
             return cached
 
         entries = RealPlayerRepository.list_entries(period_start(period))
-        entries += MockPlayerRepository.list_entries(period)
+        if RankingSettings.current().mocks_enabled:
+            entries += MockPlayerRepository.list_entries(period)
         entries = [e for e in entries if e.points > 0 or e.streak > 0]
         entries.sort(key=_SORT_KEYS[ranking_type])
 
