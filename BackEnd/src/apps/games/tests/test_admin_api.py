@@ -1,9 +1,11 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 from apps.games.models import DailyChallenge
+from apps.games.services.daily_challenge_service import DailyChallengeService
 from apps.games.tests.test_daily_flow_api import (
     ANSWER_TMDB_ID,
     DailyFlowTestsBase,
@@ -144,6 +146,35 @@ class AdminNextChallengeTests(DailyFlowTestsBase):
         )
         self.assertEqual([p["iso_639_1"] for p in data["posters"]], ["pt", None])
         self.assertNotIn("backdrops", data)
+
+    def test_gallery_orders_textless_posters_by_visual_similarity_not_rating(self):
+        # Regression test: TMDB doesn't relate a textless poster to any
+        # "with text" one, and its own vote_average has no bearing on which
+        # textless art actually matches the poster shown at search time
+        # (movie.poster_path, "/poster.jpg" here). The gallery must rank by
+        # visual closeness to that reference, not by rating.
+        self.get_next()
+        self.mock_tmdb.get_movie_images.return_value = {
+            "posters": [
+                {"file_path": "/poster-far.jpg", "vote_average": 9.0, "iso_639_1": None},
+                {"file_path": "/poster-close.jpg", "vote_average": 5.2, "iso_639_1": None},
+            ],
+        }
+        hash_by_path = {
+            "/poster.jpg": 0b00000000,  # reference (movie.poster_path)
+            "/poster-close.jpg": 0b00000001,  # 1 bit off: same art, textless
+            "/poster-far.jpg": 0b11111111,  # 8 bits off: unrelated key art
+        }
+        with patch.object(
+            DailyChallengeService, "_poster_hash", side_effect=lambda path: hash_by_path[path]
+        ):
+            response = self.gallery()
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()["data"]
+        self.assertEqual(
+            [p["file_path"] for p in data["posters"]], ["/poster-close.jpg", "/poster-far.jpg"]
+        )
 
     def test_set_image_with_specific_path_from_gallery(self):
         self.get_next()
