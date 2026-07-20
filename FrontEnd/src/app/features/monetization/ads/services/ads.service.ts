@@ -6,10 +6,20 @@ import type { AdUnit } from '../models/ad-unit.model';
 import type { RewardedAdResult } from '../models/rewarded-ad-result.model';
 
 /**
+ * ID do bloco de anúncio no AdSense por posição+formato (painel do AdSense
+ * > Anúncios > Por unidade de anúncio, um bloco por combinação). Enquanto a
+ * chave não existir aqui, `getBannerAd` não libera aquele slot — nunca
+ * chama `adsbygoogle.push()` sem um `data-ad-slot` real, o que o Google
+ * rejeita e loga como erro no console sem preencher o espaço.
+ */
+const ADSENSE_SLOT_BY_PLACEMENT: Partial<Record<`${AdPlacement}:${AdFormat}`, string>> = {
+  // 'home:banner-horizontal': '1234567890',
+};
+
+/**
  * Único ponto de decisão sobre qual provedor de anúncio é usado e se um
  * anúncio deve ser exibido. Nenhum outro módulo deve saber que provedor
- * está por trás. Hoje nenhum está integrado, então os métodos retornam
- * vazio/no-op de propósito. Trocar por Google Ads/Ad Manager/Amazon
+ * está por trás — trocar de Google AdSense pra Ad Manager/Amazon
  * Ads/Microsoft Ads/Unity Ads no futuro não deve exigir mudanças em quem
  * consome este serviço.
  */
@@ -22,11 +32,12 @@ export class AdsService {
       return null;
     }
 
-    // TODO: integrar com um provedor real (Google Ads, Google Ad Manager,
-    // Amazon Ads, Microsoft Ads, Unity Ads...). Por enquanto, sem provedor.
-    void placement;
-    void format;
-    return null;
+    const slotId = ADSENSE_SLOT_BY_PLACEMENT[`${placement}:${format}`];
+    if (!slotId) {
+      return null;
+    }
+
+    return { id: `${placement}-${format}`, placement, format, provider: 'google-ads', slotId };
   }
 
   requestInterstitial(): Promise<void> {

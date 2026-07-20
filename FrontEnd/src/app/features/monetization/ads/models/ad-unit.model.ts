@@ -7,4 +7,6 @@ export interface AdUnit {
   readonly placement: AdPlacement;
   readonly format: AdFormat;
   readonly provider: AdProvider;
+  /** ID do bloco de anúncio no AdSense (painel > Anúncios > Por unidade de anúncio). */
+  readonly slotId: string;
 }

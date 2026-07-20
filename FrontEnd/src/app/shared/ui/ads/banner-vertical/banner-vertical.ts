@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, afterNextRender, input } from '@angular/core';
+import { environment } from '../../../../../environments/environment';
 import type { AdUnit } from '../../../../features/monetization/ads/models/ad-unit.model';
 
 @Component({
@@ -6,14 +7,25 @@ import type { AdUnit } from '../../../../features/monetization/ads/models/ad-uni
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (adUnit(); as ad) {
-      <div
-        class="flex min-h-[250px] w-40 flex-col items-center justify-center rounded-lg border border-dashed border-border bg-surface text-center text-xs text-muted"
-      >
-        Anúncio · {{ ad.format }}
-      </div>
+      <ins
+        class="adsbygoogle block min-h-[250px] w-40"
+        [attr.data-ad-client]="clientId"
+        [attr.data-ad-slot]="ad.slotId"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      ></ins>
     }
   `,
 })
 export class BannerVertical {
   readonly adUnit = input<AdUnit | null>(null);
+  protected readonly clientId = environment.adsenseClientId;
+
+  constructor() {
+    afterNextRender(() => {
+      if (this.adUnit()) {
+        (window.adsbygoogle ??= []).push({});
+      }
+    });
+  }
 }
