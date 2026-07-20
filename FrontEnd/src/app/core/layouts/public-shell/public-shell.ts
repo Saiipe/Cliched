@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthModal } from '../../../features/auth/components/auth-modal/auth-modal';
 import { ChangePasswordModal } from '../../../features/auth/components/change-password-modal/change-password-modal';
 import { CookieConsentBanner } from '../../../shared/ui/cookie-consent-banner/cookie-consent-banner';
 import { SparkleField } from '../../../shared/ui/cinema-doodles/sparkle-field';
-import { ClarityLoaderService } from '../../services/clarity-loader.service';
 import { Footer } from '../footer/footer';
 import { Header } from '../header/header';
 
@@ -34,9 +33,4 @@ import { Header } from '../header/header';
     <app-cookie-consent-banner />
   `,
 })
-export class PublicShell {
-  // Injetado só pra existir desde o boot da shell e reagir ao consentimento
-  // assim que a pessoa decidir, sem depender de nenhuma página específica
-  // chamar isso primeiro.
-  private readonly clarityLoader = inject(ClarityLoaderService);
-}
+export class PublicShell {}

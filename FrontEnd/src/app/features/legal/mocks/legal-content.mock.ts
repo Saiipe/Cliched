@@ -60,7 +60,7 @@ export const LEGAL_CONTENT: Readonly<Record<LegalPageType, LegalContent>> = {
     title: 'Política de Cookies',
     updatedAt: 'julho de 2026',
     intro:
-      'O Cliched usa armazenamento local essencial ao funcionamento do site, e, só com sua permissão, cookies e scripts de métricas e anúncios de terceiros.',
+      'O Cliched usa armazenamento local essencial ao funcionamento do site, além de cookies e scripts de métricas e anúncios de terceiros.',
     sections: [
       {
         heading: 'Armazenamento local essencial (localStorage)',
@@ -68,7 +68,7 @@ export const LEGAL_CONTENT: Readonly<Record<LegalPageType, LegalContent>> = {
       },
       {
         heading: 'Métricas de uso (Microsoft Clarity)',
-        body: 'Com sua permissão (banner de cookies), usamos o Microsoft Clarity pra entender como as pessoas navegam pelo site (cliques, rolagem, tempo de sessão) e melhorar a experiência. O script só é carregado depois que você aceita; recusar não limita nenhuma funcionalidade do jogo.',
+        body: 'Usamos o Microsoft Clarity pra entender como as pessoas navegam pelo site (cliques, rolagem, tempo de sessão) e melhorar a experiência.',
       },
       {
         heading: 'Anúncios (Google AdSense)',

@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { CookieConsentService } from '../../../core/services/cookie-consent.service';
 import { Button } from '../button/button';
 
-/** Banner de confirmação exigido antes de qualquer script de métrica rodar
- * (ver `ClarityLoaderService`, que só injeta a tag depois de `accept()`).
- * Some assim que a pessoa decide (aceitar ou recusar) e não volta a
- * aparecer nessa sessão/aparelho — a escolha fica salva em localStorage. */
+/** Aviso de cookies/métricas (Microsoft Clarity, Google AdSense — ambos
+ * carregam direto no `index.html`, sem gate de consentimento hoje). Some
+ * assim que a pessoa decide (aceitar ou recusar) e não volta a aparecer
+ * nessa sessão/aparelho — a escolha fica salva em localStorage, mas hoje
+ * só informa, não bloqueia nenhum script. */
 @Component({
   selector: 'app-cookie-consent-banner',
   changeDetection: ChangeDetectionStrategy.OnPush,
