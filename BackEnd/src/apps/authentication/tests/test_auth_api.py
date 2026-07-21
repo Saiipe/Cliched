@@ -111,22 +111,21 @@ class AuthAPITests(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_register_accepts_common_nickname_punctuation(self):
-        # "T4uan" (o exemplo original do usuário) tem só 5 caracteres; com a
-        # regra de "mais de 5 caracteres" adicionada depois, precisa de mais
-        # um caractere pra ser válido.
-        for username in ("T4uan1", "Jjuli$", "joab?!"):
+        # "T4uan" é o exemplo original do usuário: 5 caracteres, mínimo
+        # aceito (USERNAME_MIN_LENGTH = 5).
+        for username in ("T4uan", "Jjuli$", "joab?!"):
             with self.subTest(username=username):
                 response = self.register(
                     username=username, email=f"{username}@example.com"
                 )
                 self.assertEqual(response.status_code, 201)
 
-    def test_register_rejects_username_with_five_characters_or_less(self):
-        response = self.register(username="ab3$!")
+    def test_register_rejects_username_with_four_characters_or_less(self):
+        response = self.register(username="ab3$")
         self.assertEqual(response.status_code, 400)
 
-    def test_register_accepts_username_with_six_characters(self):
-        response = self.register(username="ab3$!9")
+    def test_register_accepts_username_with_five_characters(self):
+        response = self.register(username="ab3$!")
         self.assertEqual(response.status_code, 201)
 
     def test_register_rejects_username_with_slash(self):

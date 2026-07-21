@@ -133,6 +133,9 @@ class DailyChallengeService:
             if not movie.backdrop_path:
                 raise BusinessRuleViolation("Este filme não tem banner (backdrop) no TMDB.")
 
+        if image_path:
+            self._validate_image_belongs_to_movie(challenge.movie, image_source, image_path)
+
         if challenge.image_source == image_source and challenge.image_path == image_path:
             return challenge
 
@@ -141,6 +144,29 @@ class DailyChallengeService:
         challenge.status = DailyChallenge.Status.PENDING
         challenge.save(update_fields=["image_source", "image_path", "status", "updated_at"])
         return self._finish_pending(challenge)
+
+    def _validate_image_belongs_to_movie(self, movie, image_source: str, image_path: str) -> None:
+        """Recusa `image_path` que não pertence à galeria do TMDB do filme
+        atual do desafio.
+
+        Sem isso, um clique na galeria do admin logo depois de trocar o
+        filme (antes da galeria nova terminar de carregar no front) manda
+        pro backend o `file_path` do filme ANTERIOR — o backend salvava
+        cegamente, gerando o pôster pixelizado de um filme completamente
+        diferente do que a resposta do desafio revela."""
+        try:
+            payload = self._tmdb.get_movie_images(movie.tmdb_id)
+        except requests.RequestException:
+            # TMDB fora do ar: não dá pra confirmar nem recusar. Deixa
+            # passar em vez de travar o admin por uma falha de terceiro.
+            return
+        key = "posters" if image_source == DailyChallenge.ImageSource.POSTER else "backdrops"
+        valid_paths = {item["file_path"] for item in payload.get(key, [])}
+        if image_path not in valid_paths:
+            raise BusinessRuleViolation(
+                "Essa imagem não pertence mais ao filme atual do desafio — "
+                "a galeria pode ter sido recarregada. Atualize a página e tente de novo."
+            )
 
     def ensure_backdrop(self, movie):
         """Backfills backdrop_path for movies synced before the field existed."""

@@ -62,6 +62,12 @@ export class AdminDailyChallengeService {
   }
 
   loadGallery(): void {
+    // Zera antes de pedir a nova: sem isso, a galeria do filme anterior
+    // continuava clicável até a resposta chegar — clicar nela nessa janela
+    // mandava o pôster de um filme errado pro desafio (o backend agora
+    // recusa isso, mas o certo é nem deixar clicar numa galeria já
+    // desatualizada).
+    this.galleryState.set(null);
     this.http
       .get<ApiEnvelope<ImageGallery>>(this.buildUrl('games/daily/next/image/gallery/'))
       .subscribe({

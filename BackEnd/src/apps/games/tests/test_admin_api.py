@@ -184,6 +184,21 @@ class AdminNextChallengeTests(DailyFlowTestsBase):
         self.assertEqual(data["image_source"], "backdrop")
         self.assertEqual(data["image_path"], "/backdrop-alt-2.jpg")
 
+    def test_set_image_rejects_path_from_a_different_movie(self):
+        # Regression test: the admin's gallery reload after a movie swap is
+        # async on the frontend. If a poster from the movie's stale (old)
+        # gallery gets clicked before the new one loads, the backend must
+        # refuse it instead of silently generating the wrong movie's art
+        # under the new movie's answer data.
+        self.get_next()
+        response = self.set_image("poster", image_path="/poster-from-a-different-movie.jpg")
+        self.assertEqual(response.status_code, 422)
+
+    def test_set_image_rejects_backdrop_path_from_poster_gallery(self):
+        self.get_next()
+        response = self.set_image("backdrop", image_path="/poster-alt-2.jpg")
+        self.assertEqual(response.status_code, 422)
+
     def test_swap_picks_a_fresh_textless_default(self):
         # A new movie's old art choice may not exist anymore, so swap must
         # pick a new textless default rather than keep a stale image_path

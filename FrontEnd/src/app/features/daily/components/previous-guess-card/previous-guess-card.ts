@@ -106,7 +106,13 @@ export class PreviousGuessCard {
         result: clues.cast.result,
       },
       {
-        label: `Duração: ${clues.runtime.value ? clues.runtime.value + ' min' : '-'}`,
+        label: `Duração: ${
+          clues.runtime.approximate && clues.runtime.answer_value
+            ? `~${clues.runtime.value} min (real: ${clues.runtime.answer_value} min)`
+            : clues.runtime.value
+              ? clues.runtime.value + ' min'
+              : '-'
+        }`,
         result: clues.runtime.result,
       },
     ];

@@ -3,7 +3,20 @@ import { IconArrowDown, IconArrowUp } from '@tabler/icons-angular';
 
 import { Icon } from '../../../../shared/ui/icon/icon';
 import { countryFlag, countryName } from '../../../../shared/utils/country.util';
-import type { ClueResult, GuessClues } from '../../models/daily-session.model';
+import type { ClueResult, GuessClues, RuntimeClue } from '../../models/daily-session.model';
+
+/** "correct" por tolerância mostra "~" no valor palpitado e revela a
+ * duração real do filme certo entre parênteses — sem isso parecia que o
+ * jogador tinha acertado a duração exata. */
+function runtimeText(clue: RuntimeClue): string {
+  if (!clue.value) {
+    return '-';
+  }
+  if (clue.approximate && clue.answer_value) {
+    return `~${clue.value} min (real: ${clue.answer_value} min)`;
+  }
+  return `${clue.value} min`;
+}
 
 interface ClueChip {
   readonly label: string;
@@ -82,8 +95,8 @@ export class GuessCluesGrid {
         result: clues.cast.result,
       },
       {
-        label: 'Duração',
-        text: clues.runtime.value ? `${clues.runtime.value} min` : '-',
+        label: clues.runtime.approximate ? 'Duração (aprox.)' : 'Duração',
+        text: runtimeText(clues.runtime),
         result: clues.runtime.result,
         direction: clues.runtime.direction,
       },

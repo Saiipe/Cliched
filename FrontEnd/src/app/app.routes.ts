@@ -93,6 +93,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        title: 'Cliched — Adivinhe o Filme | Jogo de Cinema Diário',
         loadComponent: () =>
           import('./features/home/pages/home-page/home-page').then((m) => m.HomePage),
       },
@@ -101,6 +102,7 @@ export const routes: Routes = [
         children: [
           {
             path: '',
+            title: 'Jogar — Cliched',
             loadComponent: () =>
               import('./features/catalog/pages/catalog-page/catalog-page').then(
                 (m) => m.CatalogPage,
@@ -108,6 +110,7 @@ export const routes: Routes = [
           },
           {
             path: 'diario',
+            title: 'Desafio Diário — Cliched',
             loadComponent: () =>
               import('./features/daily/pages/daily-page/daily-page').then(
                 (m) => m.DailyPage,
@@ -115,6 +118,7 @@ export const routes: Routes = [
           },
           {
             path: 'elenco',
+            title: 'Adivinhe pelo Elenco — Cliched',
             loadComponent: () =>
               import('./features/cast/pages/cast-page/cast-page').then(
                 (m) => m.CastPage,
@@ -124,6 +128,7 @@ export const routes: Routes = [
       },
       {
         path: 'ranking',
+        title: 'Ranking — Cliched',
         loadComponent: () =>
           import('./features/ranking/pages/ranking-page/ranking-page').then(
             (m) => m.RankingPage,
@@ -131,6 +136,7 @@ export const routes: Routes = [
       },
       {
         path: 'redefinir-senha',
+        title: 'Redefinir senha — Cliched',
         loadComponent: () =>
           import('./features/auth/pages/reset-password-page/reset-password-page').then(
             (m) => m.ResetPasswordPage,
@@ -138,11 +144,13 @@ export const routes: Routes = [
       },
       {
         path: 'sobre',
+        title: 'Sobre — Cliched',
         loadComponent: () =>
           import('./features/about/pages/about-page/about-page').then((m) => m.AboutPage),
       },
       {
         path: 'contato',
+        title: 'Contato — Cliched',
         loadComponent: () =>
           import('./features/contact/pages/contact-page/contact-page').then(
             (m) => m.ContactPage,
@@ -150,18 +158,21 @@ export const routes: Routes = [
       },
       {
         path: 'privacidade',
+        title: 'Política de Privacidade — Cliched',
         data: { legalType: 'privacidade' },
         loadComponent: () =>
           import('./features/legal/pages/legal-page/legal-page').then((m) => m.LegalPage),
       },
       {
         path: 'termos',
+        title: 'Termos de Uso — Cliched',
         data: { legalType: 'termos' },
         loadComponent: () =>
           import('./features/legal/pages/legal-page/legal-page').then((m) => m.LegalPage),
       },
       {
         path: 'cookies',
+        title: 'Política de Cookies — Cliched',
         data: { legalType: 'cookies' },
         loadComponent: () =>
           import('./features/legal/pages/legal-page/legal-page').then((m) => m.LegalPage),

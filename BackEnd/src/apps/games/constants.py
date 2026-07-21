@@ -9,5 +9,8 @@ WRONG_GUESS_PENALTY = 100
 POSTER_PIXEL_BLOCKS: dict[int, int | None] = {0: 4, 1: 8, 2: 14, 3: 24, 4: 48, 5: None}
 POSTER_MAX_LEVEL = 5
 
+# <=10min de diferença: "correct" (verde), marcado como aproximado se não
+# for exato. 10-20min: "partial" (amarelo). Acima de 20min: "wrong".
 RUNTIME_TOLERANCE_MIN = 10
+RUNTIME_PARTIAL_TOLERANCE_MIN = 20
 TOP_CAST_N = 5

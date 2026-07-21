@@ -49,6 +49,10 @@ export interface RuntimeClue {
   readonly value: number | null;
   readonly result: ClueResult;
   readonly direction?: 'up' | 'down';
+  /** "correct" por tolerância (±5min), não por igualdade exata — vem
+   * acompanhado de `answer_value`, a duração real do filme certo. */
+  readonly approximate?: boolean;
+  readonly answer_value?: number;
 }
 
 export interface GuessClues {

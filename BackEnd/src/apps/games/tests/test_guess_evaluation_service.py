@@ -117,17 +117,46 @@ class GuessEvaluationServiceTests(SimpleTestCase):
         self.assertEqual(clue["shared_count"], 0)
 
     # runtime
-    def test_runtime_within_tolerance(self):
-        clue = self.evaluate(runtime=145)["runtime"]  # |145-136| <= 10
+    def test_runtime_exact_match_is_correct_without_approximate_flag(self):
+        clue = self.evaluate(runtime=136)["runtime"]
+        self.assertEqual(clue["result"], "correct")
+        self.assertNotIn("approximate", clue)
+        self.assertNotIn("answer_value", clue)
+
+    def test_runtime_within_tolerance_is_flagged_approximate_with_real_value(self):
+        clue = self.evaluate(runtime=144)["runtime"]  # |144-136| = 8 <= 10
+        self.assertEqual(clue["result"], "correct")
+        self.assertTrue(clue["approximate"])
+        self.assertEqual(clue["answer_value"], 136)
+
+    def test_runtime_at_tolerance_boundary_is_correct(self):
+        clue = self.evaluate(runtime=146)["runtime"]  # |146-136| = 10
         self.assertEqual(clue["result"], "correct")
 
+    def test_runtime_just_outside_tolerance_is_partial(self):
+        clue = self.evaluate(runtime=150)["runtime"]  # |150-136| = 14
+        self.assertEqual(clue["result"], "partial")
+        self.assertTrue(clue["approximate"])
+        self.assertEqual(clue["answer_value"], 136)
+        self.assertEqual(clue["direction"], "down")
+
+    def test_runtime_at_partial_tolerance_boundary_is_partial(self):
+        clue = self.evaluate(runtime=156)["runtime"]  # |156-136| = 20
+        self.assertEqual(clue["result"], "partial")
+
+    def test_runtime_just_outside_partial_tolerance_is_wrong(self):
+        clue = self.evaluate(runtime=157)["runtime"]  # |157-136| = 21 > 20
+        self.assertEqual(clue["result"], "wrong")
+        self.assertNotIn("approximate", clue)
+        self.assertNotIn("answer_value", clue)
+
     def test_runtime_answer_longer(self):
-        clue = self.evaluate(runtime=100)["runtime"]
+        clue = self.evaluate(runtime=100)["runtime"]  # diff 36 > 20
         self.assertEqual(clue["result"], "wrong")
         self.assertEqual(clue["direction"], "up")
 
     def test_runtime_answer_shorter(self):
-        clue = self.evaluate(runtime=180)["runtime"]
+        clue = self.evaluate(runtime=180)["runtime"]  # diff 44 > 20
         self.assertEqual(clue["result"], "wrong")
         self.assertEqual(clue["direction"], "down")
 

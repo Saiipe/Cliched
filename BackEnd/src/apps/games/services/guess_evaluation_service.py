@@ -5,7 +5,11 @@ Numeric fields add "direction": "up" when the answer is greater than the
 guess (player should aim higher), "down" when smaller.
 """
 
-from apps.games.constants import RUNTIME_TOLERANCE_MIN, TOP_CAST_N
+from apps.games.constants import (
+    RUNTIME_PARTIAL_TOLERANCE_MIN,
+    RUNTIME_TOLERANCE_MIN,
+    TOP_CAST_N,
+)
 from apps.movies.models import Movie
 
 CORRECT = "correct"
@@ -95,9 +99,29 @@ class GuessEvaluationService:
         if guess.runtime is None or answer.runtime is None:
             clue["result"] = WRONG
             return clue
-        if abs(guess.runtime - answer.runtime) <= RUNTIME_TOLERANCE_MIN:
+
+        diff = abs(guess.runtime - answer.runtime)
+        direction = "up" if answer.runtime > guess.runtime else "down"
+
+        if diff <= RUNTIME_TOLERANCE_MIN:
             clue["result"] = CORRECT
+        elif diff <= RUNTIME_PARTIAL_TOLERANCE_MIN:
+            clue["result"] = PARTIAL
+        else:
+            clue["result"] = WRONG
+            clue["direction"] = direction
             return clue
-        clue["result"] = WRONG
-        clue["direction"] = "up" if answer.runtime > guess.runtime else "down"
+
+        # "correct"/"partial" aqui são por tolerância, não por igualdade —
+        # sem isso o jogador via "correto" e achava que tinha acertado a
+        # duração exata do filme certo. `answer_value` só aparece quando é
+        # de fato aproximado (diff > 0): revela a duração real, já que o
+        # jogador chegou perto o bastante pra "ganhar" essa pista mesmo
+        # assim. "partial" também leva `direction`, pra indicar de qual lado
+        # ajustar o próximo palpite.
+        if diff > 0:
+            clue["approximate"] = True
+            clue["answer_value"] = answer.runtime
+        if clue["result"] == PARTIAL:
+            clue["direction"] = direction
         return clue
